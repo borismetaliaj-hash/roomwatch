@@ -1,6 +1,6 @@
 // Roomrun service worker — enables "Add to Home Screen" / installability,
-// caches the app shell for fast reloads, and handles push notifications.
-const CACHE = 'roomrun-v1';
+// caches the app shell for offline fallback, and handles push notifications.
+const CACHE = 'roomrun-v2';
 const SHELL = ['/', '/manifest.json', '/icon-192.png', '/icon-512.png'];
 
 self.addEventListener('install', (event) => {
@@ -21,6 +21,24 @@ self.addEventListener('fetch', (event) => {
   const url = new URL(event.request.url);
   // Never cache API calls — listings must always be fresh
   if (url.pathname.startsWith('/api/')) return;
+
+  // Network-first for the page itself and the manifest, so a new deploy shows
+  // up immediately instead of being stuck behind a stale cached copy. Only
+  // falls back to the cache if the network is unreachable (offline support).
+  if (event.request.mode === 'navigate' || url.pathname === '/manifest.json') {
+    event.respondWith(
+      fetch(event.request)
+        .then((res) => {
+          const copy = res.clone();
+          caches.open(CACHE).then((c) => c.put(event.request, copy));
+          return res;
+        })
+        .catch(() => caches.match(event.request))
+    );
+    return;
+  }
+
+  // Cache-first for static assets (icons etc.) — these rarely change
   event.respondWith(
     caches.match(event.request).then((cached) => cached || fetch(event.request))
   );
