@@ -80,8 +80,13 @@
   /* ---------- Dashboard ---------- */
   #dashboard { display: none; }
   header.topbar {
-    background: linear-gradient(135deg, var(--navy-900), var(--navy-800));
-    color: #fff; padding: 18px 24px; display: flex; align-items: center; justify-content: space-between;
+    background: linear-gradient(160deg, var(--navy-900), var(--navy-800) 55%, var(--navy-700));
+    color: #fff; padding: 18px 24px 46px; display: flex; align-items: center; justify-content: space-between;
+    position: relative; overflow: hidden;
+  }
+  header.topbar::after {
+    content: ''; position: absolute; top: -60px; right: -60px; width: 220px; height: 220px;
+    background: radial-gradient(circle, rgba(76,126,255,0.35), transparent 70%); pointer-events: none;
   }
   .brand-row { display: flex; align-items: center; gap: 10px; }
   .brand-mark {
@@ -96,12 +101,24 @@
   }
   .city-switch:hover { border-color: rgba(255,255,255,0.4); color: #fff; }
 
-  .wrap { padding: 24px 24px 44px; max-width: 780px; margin: 0 auto; }
+  .wrap { padding: 24px 24px 44px; max-width: 780px; margin: -30px auto 0; position: relative; }
   .hero {
     text-align: center; padding: 34px 20px; background: #fff;
     border: 1px solid var(--line); border-radius: 20px; margin-bottom: 20px;
-    box-shadow: 0 2px 14px rgba(11,23,48,0.05);
+    box-shadow: 0 16px 40px -12px rgba(11,23,48,0.28);
   }
+  .sources-strip {
+    display: flex; flex-wrap: wrap; gap: 8px; justify-content: center;
+    margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--line);
+  }
+  .source-pill {
+    font-size: 11px; font-weight: 600; color: var(--muted); background: var(--bg);
+    border: 1px solid var(--line); border-radius: 999px; padding: 5px 11px;
+    display: inline-flex; align-items: center; gap: 6px;
+  }
+  .source-dot { width: 6px; height: 6px; border-radius: 50%; background: #C7CCDB; flex-shrink: 0; }
+  .source-pill.has-results .source-dot { background: #2CB56A; }
+  .source-pill.has-results { color: var(--ink); border-color: rgba(44,181,106,0.35); background: #F1FBF5; }
   .hero .big {
     font-family: 'Space Grotesk', sans-serif; font-size: 56px; font-weight: 700;
     background: linear-gradient(135deg, var(--navy-900), var(--accent));
@@ -158,44 +175,73 @@
   .err-note { font-size: 11px; color: #C0392B; text-align: center; margin-top: 10px; }
 
   /* ---------- Nav / secondary views ---------- */
-  .nav-links { display: flex; gap: 14px; align-items: center; }
+  .nav-links { display: flex; gap: 10px; align-items: center; }
   .nav-link {
-    font-size: 12px; font-weight: 700; color: rgba(255,255,255,0.75); cursor: pointer;
-    border: 1px solid rgba(255,255,255,0.18); padding: 6px 12px; border-radius: 999px;
-    background: transparent;
+    font-size: 12px; font-weight: 700; color: #fff; cursor: pointer;
+    border: 1px solid rgba(255,255,255,0.22); padding: 7px 14px; border-radius: 999px;
+    background: rgba(255,255,255,0.08); backdrop-filter: blur(2px);
+    transition: background .15s, border-color .15s, transform .15s;
   }
-  .nav-link:hover { border-color: rgba(255,255,255,0.4); color: #fff; }
+  .nav-link:hover { background: rgba(255,255,255,0.18); border-color: rgba(255,255,255,0.4); transform: translateY(-1px); }
+
   #alertsView, #reportView { display: none; }
-  .panel-intro { font-size: 13px; color: var(--muted); line-height: 1.55; margin-bottom: 18px; }
+  #alertsView .wrap, #reportView .wrap { max-width: 640px; }
+  .panel-intro { font-size: 13px; color: var(--muted); line-height: 1.6; margin-bottom: 20px; }
   .field-group { margin-bottom: 14px; }
   .field-label { font-size: 11.5px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: 0.3px; display: block; margin-bottom: 6px; }
   .field-input {
-    width: 100%; border: 1.5px solid var(--line); border-radius: 10px; padding: 10px 12px;
-    font-size: 14px; font-family: 'Inter', inherit; color: var(--ink);
+    width: 100%; border: 1.5px solid var(--line); border-radius: 10px; padding: 11px 13px;
+    font-size: 14px; font-family: 'Inter', inherit; color: var(--ink); background: var(--bg);
+    transition: border-color .15s, background .15s;
+  }
+  .field-input:focus {
+    outline: none; border-color: var(--accent); background: #fff;
+    box-shadow: 0 0 0 3px rgba(76,126,255,0.14);
   }
   .save-btn {
-    background: var(--navy-900); color: #fff; border: none; border-radius: 10px;
-    padding: 10px 20px; font-size: 12.5px; font-weight: 700; cursor: pointer; letter-spacing: 0.2px;
-    font-family: 'Space Grotesk', sans-serif;
+    background: linear-gradient(135deg, var(--navy-900), var(--navy-700)); color: #fff; border: none; border-radius: 10px;
+    padding: 11px 22px; font-size: 12.5px; font-weight: 700; cursor: pointer; letter-spacing: 0.2px;
+    font-family: 'Space Grotesk', sans-serif; box-shadow: 0 8px 20px -8px rgba(11,23,48,0.45);
   }
-  .save-note { font-size: 11.5px; color: #1A7A3D; margin-left: 10px; font-weight: 600; }
-  .panel-block { background: #fff; border: 1px solid var(--line); border-radius: 16px; padding: 20px; margin-bottom: 20px; }
-  .panel-title { font-family: 'Space Grotesk', sans-serif; font-size: 15px; font-weight: 700; margin: 0 0 4px; }
+  .save-btn:hover { filter: brightness(1.08); }
+  .save-note { font-size: 11.5px; color: #1A7A3D; margin-left: 10px; font-weight: 700; }
+  .panel-block {
+    background: #fff; border: 1px solid var(--line); border-radius: 18px; padding: 24px;
+    margin-bottom: 18px; position: relative; overflow: hidden;
+    box-shadow: 0 4px 18px rgba(11,23,48,0.05);
+  }
+  .panel-block::before {
+    content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+    background: linear-gradient(90deg, var(--accent), var(--accent-2));
+  }
+  .panel-eyebrow {
+    font-size: 10.5px; font-weight: 800; letter-spacing: 0.8px; text-transform: uppercase;
+    color: var(--accent); margin-bottom: 6px;
+  }
+  .panel-title { font-family: 'Space Grotesk', sans-serif; font-size: 17px; font-weight: 700; margin: 0 0 6px; letter-spacing: -0.2px; }
   .site-card {
     display: flex; justify-content: space-between; align-items: center; gap: 12px;
-    padding: 13px 4px; border-bottom: 1px solid var(--line);
+    padding: 14px 4px; border-bottom: 1px solid var(--line);
   }
   .site-card:last-child { border-bottom: none; }
-  .site-name { font-weight: 700; font-size: 14px; }
-  .site-note { font-size: 12px; color: var(--muted); margin-top: 3px; line-height: 1.4; }
-  .site-badge { font-size: 9.5px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.3px; padding: 2px 7px; border-radius: 5px; margin-left: 7px; }
+  .site-name { font-weight: 700; font-size: 14px; display: flex; align-items: center; flex-wrap: wrap; gap: 6px; }
+  .site-note { font-size: 12px; color: var(--muted); margin-top: 4px; line-height: 1.45; }
+  .site-badge { font-size: 9.5px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.3px; padding: 3px 8px; border-radius: 5px; }
   .badge-form { background: #E6F7EC; color: #1A7A3D; }
   .badge-account { background: #FDEEE0; color: #B0521A; }
   .badge-none { background: #F1E6FF; color: #6A1AB0; }
   .site-open-btn {
     font-size: 12px; font-weight: 700; color: #fff; background: linear-gradient(135deg, var(--navy-900), var(--navy-700));
-    padding: 8px 15px; border-radius: 9px; text-decoration: none; white-space: nowrap; border: none; cursor: pointer;
+    padding: 9px 17px; border-radius: 9px; text-decoration: none; white-space: nowrap; border: none; cursor: pointer;
+    box-shadow: 0 6px 16px -6px rgba(11,23,48,0.4); transition: transform .12s;
   }
+  .site-open-btn:hover { transform: translateY(-1px); }
+
+  @keyframes viewFadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .view-fade { animation: viewFadeIn .4s ease; }
 </style>
 </head>
 <body>
@@ -229,6 +275,7 @@
       <div class="updated" id="updatedAt"></div>
       <div><button class="refresh-btn" id="refreshBtn" onclick="runCheck()">Refresh</button></div>
       <div class="err-note" id="errNote"></div>
+      <div class="sources-strip" id="sourcesStrip"></div>
     </div>
 
     <div class="controls-row">
@@ -252,6 +299,7 @@
   </header>
   <div class="wrap">
     <div class="panel-block">
+      <div class="panel-eyebrow">Step 1</div>
       <div class="panel-title">Save your details once</div>
       <p class="panel-intro">Kept only on this device. Used to skip the typing when you jump to a site's own signup below — nothing is sent anywhere automatically.</p>
       <div class="field-group">
@@ -267,6 +315,7 @@
     </div>
 
     <div class="panel-block">
+      <div class="panel-eyebrow">Step 2</div>
       <div class="panel-title">Sign up for each site's real alerts</div>
       <p class="panel-intro">I can't submit these on your behalf — most either need a free account or use a bot-protected form, so a silent auto-signup wouldn't reliably work and you'd never see what you agreed to. What I can do: get you straight to the right page, one click, no hunting.</p>
       <div id="siteCards"></div>
@@ -281,6 +330,7 @@
   </header>
   <div class="wrap">
     <div class="panel-block">
+      <div class="panel-eyebrow">Community tip-off</div>
       <div class="panel-title">Spotted a listing on Facebook (or anywhere else)?</div>
       <p class="panel-intro">Facebook groups like "Get a Room, St Andrews" can't be monitored automatically — Meta shut down third-party API access to Groups in 2024, and their Terms explicitly ban scraping, with real enforcement (account bans, lawsuits). So this runs on people, not code: if you see something good, drop it here and it'll get added to the listings.</p>
       <div class="field-group">
@@ -332,10 +382,18 @@ function renderCityList() {
 }
 renderCityList();
 
+function playFade(id) {
+  const el = document.getElementById(id);
+  el.classList.remove('view-fade');
+  void el.offsetWidth;
+  el.classList.add('view-fade');
+}
+
 function enterDashboard() {
   document.getElementById('landing').style.display = 'none';
   document.getElementById('dashboard').style.display = 'block';
   document.getElementById('currentCityLabel').textContent = selectedCity;
+  playFade('dashboard');
   runCheck();
 }
 
@@ -343,6 +401,7 @@ function showLanding() {
   hideAllViews();
   document.getElementById('landing').style.display = 'flex';
   renderCityList();
+  playFade('landing');
 }
 
 function hideAllViews() {
@@ -354,6 +413,7 @@ function hideAllViews() {
 function backToDashboard() {
   hideAllViews();
   document.getElementById('dashboard').style.display = 'block';
+  playFade('dashboard');
 }
 
 // --- Get Notified: save details locally, then one-click through to each site's real signup ---
@@ -419,6 +479,7 @@ function showAlerts() {
   document.getElementById('alertsView').style.display = 'block';
   loadMyDetails();
   renderSiteCards();
+  playFade('alertsView');
 }
 
 function saveMyDetails() {
@@ -441,6 +502,7 @@ function loadMyDetails() {
 function showReport() {
   hideAllViews();
   document.getElementById('reportView').style.display = 'block';
+  playFade('reportView');
 }
 
 function submitReport() {
@@ -455,6 +517,39 @@ function submitReport() {
   const note = document.getElementById('reportNote');
   note.style.display = 'inline';
   window.open(`mailto:borismetaliaj@gmail.com?subject=${subject}&body=${body}`, '_blank');
+}
+
+// Rightmove and Zoopla/OnTheMarket explicitly prohibit scraping in their Terms of Use, so these
+// are a manually curated snapshot (not auto-refreshed) rather than a live check. Last refreshed
+// live by hand 2026-07-15 — 9 Rightmove results that day, matching the site's own result count.
+const STATIC_LISTINGS = [
+  { source: 'Rightmove', tag: 'src-rm', address: 'St Andrews Hall, St Andrews, KY16', price: '£1,296 pcm', url: 'https://www.rightmove.co.uk/property-to-rent/St-Andrews.html' },
+  { source: 'Rightmove', tag: 'src-rm', address: '7 Carron Place, St Andrews, Fife, KY16', price: '£1,985 pcm', url: 'https://www.rightmove.co.uk/property-to-rent/St-Andrews.html' },
+  { source: 'Rightmove', tag: 'src-rm', address: 'Abbey Street, St Andrews, Fife', price: '£1,600 pcm', url: 'https://www.rightmove.co.uk/property-to-rent/St-Andrews.html' },
+  { source: 'Rightmove', tag: 'src-rm', address: 'Lumsden Crescent, St Andrews', price: '£1,850 pcm', url: 'https://www.rightmove.co.uk/property-to-rent/St-Andrews.html' },
+  { source: 'Rightmove', tag: 'src-rm', address: 'Bobby Jones Place, St Andrews, Fife, KY16', price: '£1,700 pcm', url: 'https://www.rightmove.co.uk/property-to-rent/St-Andrews.html' },
+  { source: 'Rightmove', tag: 'src-rm', address: 'St Leonards Fields House, Abbey Walk, St Andrews, KY16', price: '£2,990 pcm', url: 'https://www.rightmove.co.uk/property-to-rent/St-Andrews.html' },
+  { source: 'Rightmove', tag: 'src-rm', address: 'Morton Crescent, St Andrews', price: '£1,650 pcm', url: 'https://www.rightmove.co.uk/property-to-rent/St-Andrews.html' },
+  { source: 'Rightmove', tag: 'src-rm', address: 'Lamond Drive, St Andrews, Fife, KY16', price: '£3,300 pcm', url: 'https://www.rightmove.co.uk/property-to-rent/St-Andrews.html' },
+  { source: 'Rightmove', tag: 'src-rm', address: 'Sandyhill Road, St Andrews, KY16', price: '£1,700 pcm', url: 'https://www.rightmove.co.uk/property-to-rent/St-Andrews.html' },
+  { source: 'OnTheMarket', tag: 'src-otm', address: '7 Carron Place, St. Andrews, Fife, KY16', price: '£1,985 pcm', url: 'https://www.onthemarket.com/to-rent/property/st-andrews/' }
+].map(x => ({ ...x, priceValue: (function(){ const m = x.price.replace(/,/g,'').match(/£\s*(\d+(?:\.\d+)?)/); return m ? parseFloat(m[1]) : null; })() }));
+
+// Every site this dashboard actually checks or curates — shown regardless of whether it currently
+// has availability, so the breadth of coverage is visible even when most sources read 0 right now
+// (that's real: the St Andrews rental market genuinely is this tight most of the year).
+const SOURCES_CHECKED = [
+  'St Andrews Property Lets', 'Bradburne & Co', '55Rent', 'Lawson & Thompson', 'Studentpad',
+  'Rightmove', 'OnTheMarket'
+];
+
+function renderSourcesStrip() {
+  const el = document.getElementById('sourcesStrip');
+  const present = new Set(allListings.map(l => l.source));
+  el.innerHTML = SOURCES_CHECKED.map(name => {
+    const has = present.has(name);
+    return `<span class="source-pill${has ? ' has-results' : ''}"><span class="source-dot"></span>${name}</span>`;
+  }).join('');
 }
 
 let allListings = [];
@@ -517,7 +612,7 @@ async function runCheck() {
   try {
     const res = await fetch('/api/listings');
     const data = await res.json();
-    allListings = data.listings || [];
+    allListings = [...STATIC_LISTINGS, ...(data.listings || [])];
     document.getElementById('bigNum').textContent = allListings.length;
     document.getElementById('updatedAt').textContent = 'Updated ' + new Date(data.checkedAt).toLocaleString();
     if (data.errors && data.errors.length) {
@@ -525,6 +620,7 @@ async function runCheck() {
     }
     renderFilters();
     renderList();
+    renderSourcesStrip();
   } catch (e) {
     document.getElementById('list').innerHTML = '<div class="empty">Could not reach the server. Try refreshing.</div>';
   }
