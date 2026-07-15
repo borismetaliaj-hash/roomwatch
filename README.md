@@ -1,6 +1,6 @@
 # Roomrun
 
-*Finding accommodation was harder than getting accepted to the university.*
+*All Agencies, One App*
 
 A real, standalone website version of the dashboard — same idea as the Cowork artifact, but running on its own server so it works from any browser, not just inside Cowork. This is step one toward the downloadable app.
 
