@@ -140,19 +140,36 @@ function parse55Rent(text) {
 
 // --- Lawson & Thompson + Studentpad (any town): JS-rendered pages, need a headless browser ---
 // Isolated behind its own try/catch so a Chromium failure never breaks the other sources.
+// chromium.executablePath() extracts the binary to /tmp on first call — when both sources run
+// concurrently (via Promise.all in the handler below) they'd both trigger that extraction at
+// once and collide (spawn ETXTBSY: one process tries to exec the binary while the other is
+// still writing it). Caching the resolved path/module in one shared promise means only the
+// first caller extracts; everyone else just awaits the same result.
+let chromiumReadyPromise = null;
+async function getChromiumReady() {
+  if (!chromiumReadyPromise) {
+    chromiumReadyPromise = (async () => {
+      const chromiumModule = await import('@sparticuz/chromium');
+      const chromium = chromiumModule.default || chromiumModule;
+      chromium.setHeadlessMode = true;
+      chromium.setGraphicsMode = false;
+      const executablePath = await chromium.executablePath();
+      return { chromium, executablePath };
+    })();
+  }
+  return chromiumReadyPromise;
+}
+
 async function fetchRenderedText(url, waitMs) {
   // @sparticuz/chromium and puppeteer-core ship as pure ESM as of their current major versions,
   // so a plain require() throws ERR_REQUIRE_ESM from this CommonJS file. Dynamic import() works
   // from CJS regardless of the target's module format, so use that instead.
-  const chromiumModule = await import('@sparticuz/chromium');
-  const chromium = chromiumModule.default || chromiumModule;
   const puppeteerModule = await import('puppeteer-core');
   const puppeteer = puppeteerModule.default || puppeteerModule;
-  chromium.setHeadlessMode = true;
-  chromium.setGraphicsMode = false;
+  const { chromium, executablePath } = await getChromiumReady();
   const browser = await puppeteer.launch({
     args: chromium.args,
-    executablePath: await chromium.executablePath(),
+    executablePath,
     headless: true
   });
   try {
