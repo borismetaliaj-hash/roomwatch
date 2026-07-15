@@ -3,7 +3,10 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Room Watch</title>
+<title>Roomrun</title>
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#0B1730">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -254,8 +257,8 @@
 <div id="landing">
   <div class="landing-card">
     <span class="eyebrow">Student housing, solved</span>
-    <h1 class="wordmark">Room<span>Watch</span></h1>
-    <p class="tagline">Live availability from local letting agents, in one place. Be first, not fifth in the queue.</p>
+    <h1 class="wordmark">Room<span>run</span></h1>
+    <p class="tagline">"Finding accommodation was harder than getting accepted to the university." Not this time — live availability from local letting agents, in one place.</p>
     <div class="city-list" id="cityList"></div>
     <button class="enter-btn" onclick="enterDashboard()">View Listings →</button>
   </div>
@@ -265,7 +268,7 @@
   <header class="topbar">
     <div class="brand-row">
       <div class="brand-mark">R</div>
-      <div class="brand">Room Watch</div>
+      <div class="brand">Roomrun</div>
     </div>
     <div class="nav-links">
       <div class="nav-link" onclick="showAlerts()">🔔 Get Notified</div>
@@ -318,12 +321,20 @@
 
 <div id="alertsView">
   <header class="topbar">
-    <div class="brand-row"><div class="brand-mark">R</div><div class="brand">Room Watch</div></div>
+    <div class="brand-row"><div class="brand-mark">R</div><div class="brand">Roomrun</div></div>
     <div class="nav-links"><div class="nav-link" onclick="backToDashboard()">← Back to listings</div></div>
   </header>
   <div class="wrap">
     <div class="panel-block">
       <div class="panel-eyebrow">Step 1</div>
+      <div class="panel-title">Turn on push notifications</div>
+      <p class="panel-intro">Get pinged the moment a new listing goes up — no need to keep checking back. Works even when the app is closed, once it's installed to your home screen.</p>
+      <button class="save-btn" id="notifyBtn" onclick="enableNotifications()">Enable notifications</button>
+      <span class="save-note" id="notifyNote" style="display:none;"></span>
+    </div>
+
+    <div class="panel-block">
+      <div class="panel-eyebrow">Step 2</div>
       <div class="panel-title">Save your details once</div>
       <p class="panel-intro">Kept only on this device. Used to skip the typing when you jump to a site's own signup below — nothing is sent anywhere automatically.</p>
       <div class="field-group">
@@ -339,7 +350,7 @@
     </div>
 
     <div class="panel-block">
-      <div class="panel-eyebrow">Step 2</div>
+      <div class="panel-eyebrow">Step 3</div>
       <div class="panel-title">Sign up for each site's real alerts</div>
       <p class="panel-intro">I can't submit these on your behalf — most either need a free account or use a bot-protected form, so a silent auto-signup wouldn't reliably work and you'd never see what you agreed to. What I can do: get you straight to the right page, one click, no hunting.</p>
       <div id="siteCards"></div>
@@ -349,7 +360,7 @@
 
 <div id="reportView">
   <header class="topbar">
-    <div class="brand-row"><div class="brand-mark">R</div><div class="brand">Room Watch</div></div>
+    <div class="brand-row"><div class="brand-mark">R</div><div class="brand">Roomrun</div></div>
     <div class="nav-links"><div class="nav-link" onclick="backToDashboard()">← Back to listings</div></div>
   </header>
   <div class="wrap">
@@ -380,6 +391,62 @@
 </div>
 
 <script>
+// --- PWA install + push notifications ---
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/sw.js').catch(err => console.warn('SW registration failed', err));
+  });
+}
+
+const VAPID_PUBLIC_KEY = 'BAGVrK9U73i8lsibBbwShBRVhExBFL0jAQNrfKPAMEJ9D-N1x3XWwbhUOWha9pcYwadA83EPiEflfu9BSMEy774';
+
+function urlBase64ToUint8Array(base64String) {
+  const padding = '='.repeat((4 - (base64String.length % 4)) % 4);
+  const base64 = (base64String + padding).replace(/-/g, '+').replace(/_/g, '/');
+  const rawData = atob(base64);
+  return Uint8Array.from([...rawData].map(c => c.charCodeAt(0)));
+}
+
+async function enableNotifications() {
+  const btn = document.getElementById('notifyBtn');
+  const note = document.getElementById('notifyNote');
+  if (!('serviceWorker' in navigator) || !('PushManager' in window)) {
+    note.textContent = 'Push isn\'t supported in this browser.';
+    note.style.display = 'inline';
+    return;
+  }
+  btn.disabled = true; btn.textContent = 'Enabling…';
+  try {
+    const permission = await Notification.requestPermission();
+    if (permission !== 'granted') {
+      note.textContent = 'Notifications blocked — enable them in your browser settings to use this.';
+      note.style.display = 'inline';
+      btn.disabled = false; btn.textContent = 'Enable notifications';
+      return;
+    }
+    const reg = await navigator.serviceWorker.ready;
+    let sub = await reg.pushManager.getSubscription();
+    if (!sub) {
+      sub = await reg.pushManager.subscribe({
+        userVisibleOnly: true,
+        applicationServerKey: urlBase64ToUint8Array(VAPID_PUBLIC_KEY)
+      });
+    }
+    await fetch('/api/subscribe', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(sub)
+    });
+    note.textContent = 'Notifications on ✓';
+    note.style.display = 'inline';
+    btn.textContent = 'Enabled';
+  } catch (e) {
+    note.textContent = 'Something went wrong — try again.';
+    note.style.display = 'inline';
+    btn.disabled = false; btn.textContent = 'Enable notifications';
+  }
+}
+
 const CITIES = [
   { name: 'St Andrews', available: true },
   { name: 'Edinburgh', available: true },
@@ -540,7 +607,7 @@ function submitReport() {
   const price = document.getElementById('reportPrice').value.trim();
   const link = document.getElementById('reportLink').value.trim();
   const source = document.getElementById('reportSource').value.trim();
-  const subject = encodeURIComponent('RoomWatch — listing spotted');
+  const subject = encodeURIComponent('Roomrun — listing spotted');
   const body = encodeURIComponent(
     `Address/description: ${addr}\nPrice: ${price}\nLink / contact: ${link}\nSpotted on: ${source}`
   );
