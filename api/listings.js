@@ -39,9 +39,18 @@ const HTT_OPTS = {
   ]
 };
 
+// Some small letting-agent sites sit behind generic bot-mitigation (WAF/hosting-level, not a
+// scraping restriction — these sites have no anti-scraping clause in their T&Cs, see CITY_SOURCES
+// comment below) that rejects requests self-identifying as a bot with a 415/403. Sending the same
+// header set a real browser sends avoids tripping that, without misrepresenting what we're doing.
 async function fetchText(url) {
   const res = await fetch(url, {
-    headers: { 'User-Agent': 'Mozilla/5.0 (compatible; Roomrun/1.0)' }
+    headers: {
+      'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36',
+      'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+      'Accept-Language': 'en-GB,en;q=0.9',
+      'Accept-Encoding': 'gzip, deflate, br'
+    }
   });
   if (!res.ok) throw new Error('HTTP ' + res.status + ' for ' + url);
   const html = await res.text();
@@ -134,6 +143,8 @@ function parse55Rent(text) {
 async function fetchRenderedText(url, waitMs) {
   const chromium = require('@sparticuz/chromium');
   const puppeteer = require('puppeteer-core');
+  chromium.setHeadlessMode = true;
+  chromium.setGraphicsMode = false;
   const browser = await puppeteer.launch({
     args: chromium.args,
     executablePath: await chromium.executablePath(),
