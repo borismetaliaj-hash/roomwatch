@@ -11,657 +11,674 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
-  :root {
-    --navy-950: #060D1F;
-    --navy-900: #0B1730;
-    --navy-800: #122145;
-    --navy-700: #1B2E5C;
-    --accent: #4C7EFF;
-    --accent-2: #7FA8FF;
-    --accent-soft: #E8EFFF;
-    --ink: #0B1730;
-    --muted: #5B647A;
-    --line: #E4E8F2;
-    --bg: #F4F6FC;
-  }
-  * { box-sizing: border-box; }
-  body {
-    margin: 0;
-    font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-    background: var(--bg);
-    color: var(--ink);
-  }
-  h1, h2, .wordmark, .brand { font-family: 'Space Grotesk', 'Inter', sans-serif; }
+:root {
+--navy-950: #060D1F;
+--navy-900: #0B1730;
+--navy-800: #122145;
+--navy-700: #1B2E5C;
+--accent: #4C7EFF;
+--accent-2: #7FA8FF;
+--accent-soft: #E8EFFF;
+--ink: #0B1730;
+--muted: #5B647A;
+--line: #E4E8F2;
+--bg: #F4F6FC;
+}
+* { box-sizing: border-box; }
+body {
+margin: 0;
+font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+background: var(--bg);
+color: var(--ink);
+}
+h1, h2, .wordmark, .brand { font-family: 'Space Grotesk', 'Inter', sans-serif; }
 
-  /* ---------- Landing ---------- */
-  #landing {
-    min-height: 100vh;
-    display: flex; align-items: center; justify-content: center;
-    background: radial-gradient(circle at 20% 15%, var(--navy-700), var(--navy-950) 60%);
-    padding: 24px;
-  }
-  .landing-card { max-width: 460px; width: 100%; text-align: center; }
-  .eyebrow {
-    display: inline-block; font-size: 11px; font-weight: 700; letter-spacing: 1.6px;
-    color: var(--accent-2); text-transform: uppercase; margin-bottom: 18px;
-    padding: 6px 14px; border: 1px solid rgba(127,168,255,0.35); border-radius: 999px;
-  }
-  .wordmark {
-    font-size: 52px; font-weight: 700; color: #fff; line-height: 1.05; margin: 0 0 10px;
-    letter-spacing: -1px;
-  }
-  .wordmark span { color: var(--accent-2); }
-  .tagline { font-size: 15px; color: rgba(255,255,255,0.65); margin: 0 0 32px; line-height: 1.5; }
+/* ---------- Landing ---------- */
+#landing {
+min-height: 100vh;
+display: flex; align-items: center; justify-content: center;
+background: radial-gradient(circle at 20% 15%, var(--navy-700), var(--navy-950) 60%);
+padding: 24px;
+}
+.landing-card { max-width: 460px; width: 100%; text-align: center; }
+.eyebrow {
+display: inline-block; font-size: 11px; font-weight: 700; letter-spacing: 1.6px;
+color: var(--accent-2); text-transform: uppercase; margin-bottom: 18px;
+padding: 6px 14px; border: 1px solid rgba(127,168,255,0.35); border-radius: 999px;
+}
+.wordmark {
+font-size: 52px; font-weight: 700; color: #fff; line-height: 1.05; margin: 0 0 10px;
+letter-spacing: -1px;
+}
+.wordmark span { color: var(--accent-2); }
+.tagline { font-size: 15px; color: rgba(255,255,255,0.65); margin: 0 0 32px; line-height: 1.5; }
 
-  .city-list { display: flex; flex-direction: column; gap: 10px; margin-bottom: 22px; text-align: left; }
-  .city-option {
-    display: flex; align-items: center; justify-content: space-between;
-    background: rgba(255,255,255,0.04); border: 1.5px solid rgba(255,255,255,0.1);
-    border-radius: 14px; padding: 14px 18px; cursor: pointer; transition: border-color .15s, background .15s;
-  }
-  .city-option .name { font-weight: 600; font-size: 15px; color: #fff; }
-  .city-option .tag { font-size: 10px; font-weight: 700; letter-spacing: 0.4px; text-transform: uppercase; color: rgba(255,255,255,0.4); }
-  .city-option.active { border-color: var(--accent); background: rgba(76,126,255,0.14); }
-  .city-option.active .tag { color: var(--accent-2); }
-  .city-option.disabled { cursor: not-allowed; opacity: 0.4; }
-  .radio-dot {
-    width: 18px; height: 18px; border-radius: 50%; border: 2px solid rgba(255,255,255,0.3);
-    display: inline-flex; align-items: center; justify-content: center; margin-right: 12px; flex-shrink: 0;
-  }
-  .city-option.active .radio-dot { border-color: var(--accent); }
-  .city-option.active .radio-dot::after { content: ''; width: 9px; height: 9px; border-radius: 50%; background: var(--accent); }
-  .city-name-row { display: flex; align-items: center; }
+.city-list { display: flex; flex-direction: column; gap: 10px; margin-bottom: 22px; text-align: left; }
+.city-option {
+display: flex; align-items: center; justify-content: space-between;
+background: rgba(255,255,255,0.04); border: 1.5px solid rgba(255,255,255,0.1);
+border-radius: 14px; padding: 14px 18px; cursor: pointer; transition: border-color .15s, background .15s;
+}
+.city-option .name { font-weight: 600; font-size: 15px; color: #fff; }
+.city-option .tag { font-size: 10px; font-weight: 700; letter-spacing: 0.4px; text-transform: uppercase; color: rgba(255,255,255,0.4); }
+.city-option.active { border-color: var(--accent); background: rgba(76,126,255,0.14); }
+.city-option.active .tag { color: var(--accent-2); }
+.city-option.disabled { cursor: not-allowed; opacity: 0.4; }
+.radio-dot {
+width: 18px; height: 18px; border-radius: 50%; border: 2px solid rgba(255,255,255,0.3);
+display: inline-flex; align-items: center; justify-content: center; margin-right: 12px; flex-shrink: 0;
+}
+.city-option.active .radio-dot { border-color: var(--accent); }
+.city-option.active .radio-dot::after { content: ''; width: 9px; height: 9px; border-radius: 50%; background: var(--accent); }
+.city-name-row { display: flex; align-items: center; }
 
-  .enter-btn {
-    width: 100%; background: linear-gradient(135deg, var(--accent), #2E5CE6);
-    color: #fff; border: none; border-radius: 14px; padding: 16px; font-size: 15px;
-    font-weight: 700; font-family: 'Space Grotesk', sans-serif; cursor: pointer;
-    box-shadow: 0 10px 30px -8px rgba(76,126,255,0.55); letter-spacing: 0.2px;
-  }
-  .enter-btn:hover { filter: brightness(1.06); }
+.enter-btn {
+width: 100%; background: linear-gradient(135deg, var(--accent), #2E5CE6);
+color: #fff; border: none; border-radius: 14px; padding: 16px; font-size: 15px;
+font-weight: 700; font-family: 'Space Grotesk', sans-serif; cursor: pointer;
+box-shadow: 0 10px 30px -8px rgba(76,126,255,0.55); letter-spacing: 0.2px;
+}
+.enter-btn:hover { filter: brightness(1.06); }
 
-  /* ---------- Dashboard ---------- */
-  #dashboard { display: none; }
-  header.topbar {
-    background: linear-gradient(160deg, var(--navy-900), var(--navy-800) 55%, var(--navy-700));
-    color: #fff; padding: 18px 24px 46px; display: flex; align-items: center; justify-content: space-between;
-    position: relative; overflow: hidden;
-  }
-  header.topbar::after {
-    content: ''; position: absolute; top: -60px; right: -60px; width: 220px; height: 220px;
-    background: radial-gradient(circle, rgba(76,126,255,0.35), transparent 70%); pointer-events: none;
-  }
-  .brand-row { display: flex; align-items: center; gap: 10px; }
-  .brand-mark {
-    width: 30px; height: 30px; border-radius: 9px; background: linear-gradient(135deg, var(--accent), var(--accent-2));
-    display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 14px;
-  }
-  .brand { font-size: 18px; font-weight: 700; letter-spacing: -0.3px; }
-  .city-switch {
-    font-size: 12px; font-weight: 600; color: rgba(255,255,255,0.75); cursor: pointer;
-    border: 1px solid rgba(255,255,255,0.18); padding: 6px 12px; border-radius: 999px;
-    display: flex; align-items: center; gap: 6px;
-  }
-  .city-switch:hover { border-color: rgba(255,255,255,0.4); color: #fff; }
+/* ---------- Dashboard ---------- */
+#dashboard { display: none; }
+header.topbar {
+background: linear-gradient(160deg, var(--navy-900), var(--navy-800) 55%, var(--navy-700));
+color: #fff; padding: 18px 24px 46px; display: flex; align-items: center; justify-content: space-between;
+position: relative; overflow: hidden;
+}
+header.topbar::after {
+content: ''; position: absolute; top: -60px; right: -60px; width: 220px; height: 220px;
+background: radial-gradient(circle, rgba(76,126,255,0.35), transparent 70%); pointer-events: none;
+}
+.brand-row { display: flex; align-items: center; gap: 10px; }
+.brand-mark {
+width: 30px; height: 30px; border-radius: 9px; background: linear-gradient(135deg, var(--accent), var(--accent-2));
+display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 14px;
+}
+.brand { font-size: 18px; font-weight: 700; letter-spacing: -0.3px; }
+.city-switch {
+font-size: 12px; font-weight: 600; color: rgba(255,255,255,0.75); cursor: pointer;
+border: 1px solid rgba(255,255,255,0.18); padding: 6px 12px; border-radius: 999px;
+display: flex; align-items: center; gap: 6px;
+}
+.city-switch:hover { border-color: rgba(255,255,255,0.4); color: #fff; }
 
-  .wrap { padding: 24px 24px 44px; max-width: 780px; margin: -30px auto 0; position: relative; }
-  .hero {
-    text-align: center; padding: 34px 20px; background: #fff;
-    border: 1px solid var(--line); border-radius: 20px; margin-bottom: 20px;
-    box-shadow: 0 16px 40px -12px rgba(11,23,48,0.28);
-  }
-  .sources-strip {
-    display: flex; flex-wrap: wrap; gap: 8px; justify-content: center;
-    margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--line);
-  }
-  .source-pill {
-    font-size: 11px; font-weight: 600; color: var(--muted); background: var(--bg);
-    border: 1px solid var(--line); border-radius: 999px; padding: 5px 11px;
-    display: inline-flex; align-items: center; gap: 6px;
-  }
-  .source-dot { width: 6px; height: 6px; border-radius: 50%; background: #C7CCDB; flex-shrink: 0; }
-  .source-pill.has-results .source-dot { background: #2CB56A; }
-  .source-pill.has-results { color: var(--ink); border-color: rgba(44,181,106,0.35); background: #F1FBF5; }
-  .hero .big {
-    font-family: 'Space Grotesk', sans-serif; font-size: 56px; font-weight: 700;
-    background: linear-gradient(135deg, var(--navy-900), var(--accent));
-    -webkit-background-clip: text; background-clip: text; color: transparent; line-height: 1;
-  }
-  .hero .sub { font-size: 14px; color: var(--muted); margin-top: 8px; font-weight: 500; }
-  .hero .updated { font-size: 11px; color: #9AA3B8; margin-top: 12px; }
-  .refresh-btn {
-    background: var(--navy-900); color: #fff; border: none; border-radius: 10px;
-    padding: 10px 20px; font-size: 12px; font-weight: 700; cursor: pointer; margin-top: 14px;
-    font-family: 'Space Grotesk', sans-serif; letter-spacing: 0.2px;
-  }
-  .refresh-btn:disabled { opacity: 0.6; }
-  .controls-row {
-    display: flex; justify-content: space-between; align-items: center; gap: 10px;
-    margin: 20px 0 12px; flex-wrap: wrap;
-  }
-  .filters { display: flex; gap: 8px; flex-wrap: wrap; }
-  .filter-btn {
-    border: 1.5px solid var(--line); background: #fff; border-radius: 999px;
-    padding: 7px 15px; font-size: 12px; font-weight: 600; color: var(--muted); cursor: pointer;
-    transition: all .12s;
-  }
-  .filter-btn.active { background: var(--navy-900); color: #fff; border-color: var(--navy-900); }
-  .sort-select {
-    border: 1.5px solid var(--line); background: #fff; border-radius: 10px;
-    padding: 7px 12px; font-size: 12px; font-weight: 600; color: var(--muted); cursor: pointer;
-  }
-  .card-list { display: flex; flex-direction: column; gap: 9px; }
-  .card {
-    background: #fff; border: 1px solid var(--line); border-radius: 14px;
-    padding: 14px 16px; display: flex; justify-content: space-between; align-items: center; gap: 12px;
-    transition: box-shadow .15s, transform .15s;
-  }
-  .card:hover { box-shadow: 0 6px 20px rgba(11,23,48,0.08); transform: translateY(-1px); }
-  .card-main { flex: 1; min-width: 0; }
-  .card-addr { font-weight: 600; font-size: 14.5px; }
-  .card-meta { font-size: 11.5px; color: var(--muted); margin-top: 4px; margin-left: 1px; }
-  .src {
-    font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.3px;
-    padding: 3px 8px; border-radius: 6px; margin-right: 8px;
-  }
-  .src-sapl { background: #F1E6FF; color: #6A1AB0; }
-  .src-brad { background: #E6F7EC; color: #1A7A3D; }
-  .src-55r  { background: #FFF0E6; color: #B04D1A; }
-  .src-lt   { background: var(--accent-soft); color: #1A4FCF; }
-  .src-sp   { background: #FFE6EE; color: #B0195A; }
-  .src-rm   { background: var(--accent-soft); color: #1A4FCF; }
-  .src-otm  { background: #FDEEE0; color: #B0521A; }
-  .src-hmj  { background: #E6F4FD; color: #1A6FA0; }
-  .src-spr  { background: #FFE9F0; color: #B01A5C; }
-  .src-fr   { background: #EAF7E9; color: #237A3B; }
-  .src-2let { background: #FFF4E0; color: #A65E00; }
-  .src-pml  { background: #F3E9FF; color: #6C2BB0; }
-  .src-community { background: #FFF0F5; color: #B0195A; }
-  .card-contact { font-size: 11.5px; color: var(--muted); white-space: nowrap; }
-  .price { font-family: 'Space Grotesk', sans-serif; font-weight: 700; font-size: 15px; color: var(--navy-900); white-space: nowrap; }
-  .view-link {
-    font-size: 12px; font-weight: 700; color: #fff; background: linear-gradient(135deg, var(--navy-900), var(--navy-700));
-    padding: 8px 16px; border-radius: 9px; text-decoration: none; white-space: nowrap;
-    font-family: 'Space Grotesk', sans-serif;
-  }
-  .empty { font-size: 13px; color: #97A0B5; padding: 18px 2px; text-align: center; }
-  .err-note { font-size: 11px; color: #C0392B; text-align: center; margin-top: 10px; }
+.wrap { padding: 24px 24px 44px; max-width: 780px; margin: -30px auto 0; position: relative; }
+.hero {
+text-align: center; padding: 34px 20px; background: #fff;
+border: 1px solid var(--line); border-radius: 20px; margin-bottom: 20px;
+box-shadow: 0 16px 40px -12px rgba(11,23,48,0.28);
+}
+.sources-strip {
+display: flex; flex-wrap: wrap; gap: 8px; justify-content: center;
+margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--line);
+}
+.source-pill {
+font-size: 11px; font-weight: 600; color: var(--muted); background: var(--bg);
+border: 1px solid var(--line); border-radius: 999px; padding: 5px 11px;
+display: inline-flex; align-items: center; gap: 6px;
+}
+.source-dot { width: 6px; height: 6px; border-radius: 50%; background: #C7CCDB; flex-shrink: 0; }
+.source-pill.has-results .source-dot { background: #2CB56A; }
+.source-pill.has-results { color: var(--ink); border-color: rgba(44,181,106,0.35); background: #F1FBF5; }
+.hero .big {
+font-family: 'Space Grotesk', sans-serif; font-size: 56px; font-weight: 700;
+background: linear-gradient(135deg, var(--navy-900), var(--accent));
+-webkit-background-clip: text; background-clip: text; color: transparent; line-height: 1;
+}
+.hero .sub { font-size: 14px; color: var(--muted); margin-top: 8px; font-weight: 500; }
+.hero .updated { font-size: 11px; color: #9AA3B8; margin-top: 12px; }
+.refresh-btn {
+background: var(--navy-900); color: #fff; border: none; border-radius: 10px;
+padding: 10px 20px; font-size: 12px; font-weight: 700; cursor: pointer; margin-top: 14px;
+font-family: 'Space Grotesk', sans-serif; letter-spacing: 0.2px;
+}
+.refresh-btn:disabled { opacity: 0.6; }
+.controls-row {
+display: flex; justify-content: space-between; align-items: center; gap: 10px;
+margin: 20px 0 12px; flex-wrap: wrap;
+}
+.filters { display: flex; gap: 8px; flex-wrap: wrap; }
+.filter-btn {
+border: 1.5px solid var(--line); background: #fff; border-radius: 999px;
+padding: 7px 15px; font-size: 12px; font-weight: 600; color: var(--muted); cursor: pointer;
+transition: all .12s;
+}
+.filter-btn.active { background: var(--navy-900); color: #fff; border-color: var(--navy-900); }
+.sort-select {
+border: 1.5px solid var(--line); background: #fff; border-radius: 10px;
+padding: 7px 12px; font-size: 12px; font-weight: 600; color: var(--muted); cursor: pointer;
+}
+.card-list { display: flex; flex-direction: column; gap: 9px; }
+.card {
+background: #fff; border: 1px solid var(--line); border-radius: 14px;
+padding: 14px 16px; display: flex; justify-content: space-between; align-items: center; gap: 12px;
+transition: box-shadow .15s, transform .15s;
+}
+.card:hover { box-shadow: 0 6px 20px rgba(11,23,48,0.08); transform: translateY(-1px); }
+.card-main { flex: 1; min-width: 0; }
+.card-addr { font-weight: 600; font-size: 14.5px; }
+.card-meta { font-size: 11.5px; color: var(--muted); margin-top: 4px; margin-left: 1px; }
+.src {
+font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.3px;
+padding: 3px 8px; border-radius: 6px; margin-right: 8px;
+}
+.src-sapl { background: #F1E6FF; color: #6A1AB0; }
+.src-brad { background: #E6F7EC; color: #1A7A3D; }
+.src-55r { background: #FFF0E6; color: #B04D1A; }
+.src-lt { background: var(--accent-soft); color: #1A4FCF; }
+.src-sp { background: #FFE6EE; color: #B0195A; }
+.src-rm { background: var(--accent-soft); color: #1A4FCF; }
+.src-otm { background: #FDEEE0; color: #B0521A; }
+.src-hmj { background: #E6F4FD; color: #1A6FA0; }
+.src-spr { background: #FFE9F0; color: #B01A5C; }
+.src-fr { background: #EAF7E9; color: #237A3B; }
+.src-2let { background: #FFF4E0; color: #A65E00; }
+.src-pml { background: #F3E9FF; color: #6C2BB0; }
+.src-community { background: #FFF0F5; color: #B0195A; }
+.card-contact { font-size: 11.5px; color: var(--muted); white-space: nowrap; }
+.price { font-family: 'Space Grotesk', sans-serif; font-weight: 700; font-size: 15px; color: var(--navy-900); white-space: nowrap; }
+.view-link {
+font-size: 12px; font-weight: 700; color: #fff; background: linear-gradient(135deg, var(--navy-900), var(--navy-700));
+padding: 8px 16px; border-radius: 9px; text-decoration: none; white-space: nowrap;
+font-family: 'Space Grotesk', sans-serif;
+}
+.empty { font-size: 13px; color: #97A0B5; padding: 18px 2px; text-align: center; }
+.err-note { font-size: 11px; color: #C0392B; text-align: center; margin-top: 10px; }
 
-  /* ---------- Nav / secondary views ---------- */
-  .nav-links { display: flex; gap: 10px; align-items: center; }
-  .nav-link {
-    font-size: 12px; font-weight: 700; color: #fff; cursor: pointer;
-    border: 1px solid rgba(255,255,255,0.22); padding: 7px 14px; border-radius: 999px;
-    background: rgba(255,255,255,0.08); backdrop-filter: blur(2px);
-    transition: background .15s, border-color .15s, transform .15s;
-  }
-  .nav-link:hover { background: rgba(255,255,255,0.18); border-color: rgba(255,255,255,0.4); transform: translateY(-1px); }
+/* ---------- Nav / secondary views ---------- */
+.nav-links { display: flex; gap: 10px; align-items: center; }
+.nav-link {
+font-size: 12px; font-weight: 700; color: #fff; cursor: pointer;
+border: 1px solid rgba(255,255,255,0.22); padding: 7px 14px; border-radius: 999px;
+background: rgba(255,255,255,0.08); backdrop-filter: blur(2px);
+transition: background .15s, border-color .15s, transform .15s;
+}
+.nav-link:hover { background: rgba(255,255,255,0.18); border-color: rgba(255,255,255,0.4); transform: translateY(-1px); }
 
-  #alertsView, #reportView { display: none; }
-  #alertsView .wrap, #reportView .wrap { max-width: 640px; }
-  .panel-intro { font-size: 13px; color: var(--muted); line-height: 1.6; margin-bottom: 20px; }
-  .field-group { margin-bottom: 14px; }
-  .field-label { font-size: 11.5px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: 0.3px; display: block; margin-bottom: 6px; }
-  .field-input {
-    width: 100%; border: 1.5px solid var(--line); border-radius: 10px; padding: 11px 13px;
-    font-size: 14px; font-family: 'Inter', inherit; color: var(--ink); background: var(--bg);
-    transition: border-color .15s, background .15s;
-  }
-  .field-input:focus {
-    outline: none; border-color: var(--accent); background: #fff;
-    box-shadow: 0 0 0 3px rgba(76,126,255,0.14);
-  }
-  .save-btn {
-    background: linear-gradient(135deg, var(--navy-900), var(--navy-700)); color: #fff; border: none; border-radius: 10px;
-    padding: 11px 22px; font-size: 12.5px; font-weight: 700; cursor: pointer; letter-spacing: 0.2px;
-    font-family: 'Space Grotesk', sans-serif; box-shadow: 0 8px 20px -8px rgba(11,23,48,0.45);
-  }
-  .save-btn:hover { filter: brightness(1.08); }
-  .save-note { font-size: 11.5px; color: #1A7A3D; margin-left: 10px; font-weight: 700; }
-  .panel-block {
-    background: #fff; border: 1px solid var(--line); border-radius: 18px; padding: 24px;
-    margin-bottom: 18px; position: relative; overflow: hidden;
-    box-shadow: 0 4px 18px rgba(11,23,48,0.05);
-  }
-  .panel-block::before {
-    content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
-    background: linear-gradient(90deg, var(--accent), var(--accent-2));
-  }
-  .panel-eyebrow {
-    font-size: 10.5px; font-weight: 800; letter-spacing: 0.8px; text-transform: uppercase;
-    color: var(--accent); margin-bottom: 6px;
-  }
-  .panel-title { font-family: 'Space Grotesk', sans-serif; font-size: 17px; font-weight: 700; margin: 0 0 6px; letter-spacing: -0.2px; }
-  .site-card {
-    display: flex; justify-content: space-between; align-items: center; gap: 12px;
-    padding: 14px 4px; border-bottom: 1px solid var(--line);
-  }
-  .site-card:last-child { border-bottom: none; }
-  .site-name { font-weight: 700; font-size: 14px; display: flex; align-items: center; flex-wrap: wrap; gap: 6px; }
-  .site-note { font-size: 12px; color: var(--muted); margin-top: 4px; line-height: 1.45; }
-  .site-badge { font-size: 9.5px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.3px; padding: 3px 8px; border-radius: 5px; }
-  .badge-form { background: #E6F7EC; color: #1A7A3D; }
-  .badge-account { background: #FDEEE0; color: #B0521A; }
-  .badge-none { background: #F1E6FF; color: #6A1AB0; }
-  .site-open-btn {
-    font-size: 12px; font-weight: 700; color: #fff; background: linear-gradient(135deg, var(--navy-900), var(--navy-700));
-    padding: 9px 17px; border-radius: 9px; text-decoration: none; white-space: nowrap; border: none; cursor: pointer;
-    box-shadow: 0 6px 16px -6px rgba(11,23,48,0.4); transition: transform .12s;
-  }
-  .site-open-btn:hover { transform: translateY(-1px); }
+#alertsView, #reportView { display: none; }
+#alertsView .wrap, #reportView .wrap { max-width: 640px; }
+.panel-intro { font-size: 13px; color: var(--muted); line-height: 1.6; margin-bottom: 20px; }
+.field-group { margin-bottom: 14px; }
+.field-label { font-size: 11.5px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: 0.3px; display: block; margin-bottom: 6px; }
+.field-input {
+width: 100%; border: 1.5px solid var(--line); border-radius: 10px; padding: 11px 13px;
+font-size: 14px; font-family: 'Inter', inherit; color: var(--ink); background: var(--bg);
+transition: border-color .15s, background .15s;
+}
+.field-input:focus {
+outline: none; border-color: var(--accent); background: #fff;
+box-shadow: 0 0 0 3px rgba(76,126,255,0.14);
+}
+.save-btn {
+background: linear-gradient(135deg, var(--navy-900), var(--navy-700)); color: #fff; border: none; border-radius: 10px;
+padding: 11px 22px; font-size: 12.5px; font-weight: 700; cursor: pointer; letter-spacing: 0.2px;
+font-family: 'Space Grotesk', sans-serif; box-shadow: 0 8px 20px -8px rgba(11,23,48,0.45);
+}
+.save-btn:hover { filter: brightness(1.08); }
+.save-note { font-size: 11.5px; color: #1A7A3D; margin-left: 10px; font-weight: 700; }
+.panel-block {
+background: #fff; border: 1px solid var(--line); border-radius: 18px; padding: 24px;
+margin-bottom: 18px; position: relative; overflow: hidden;
+box-shadow: 0 4px 18px rgba(11,23,48,0.05);
+}
+.panel-block::before {
+content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+background: linear-gradient(90deg, var(--accent), var(--accent-2));
+}
+.panel-eyebrow {
+font-size: 10.5px; font-weight: 800; letter-spacing: 0.8px; text-transform: uppercase;
+color: var(--accent); margin-bottom: 6px;
+}
+.panel-title { font-family: 'Space Grotesk', sans-serif; font-size: 17px; font-weight: 700; margin: 0 0 6px; letter-spacing: -0.2px; }
+.site-card {
+display: flex; justify-content: space-between; align-items: center; gap: 12px;
+padding: 14px 4px; border-bottom: 1px solid var(--line);
+}
+.site-card:last-child { border-bottom: none; }
+.site-name { font-weight: 700; font-size: 14px; display: flex; align-items: center; flex-wrap: wrap; gap: 6px; }
+.site-note { font-size: 12px; color: var(--muted); margin-top: 4px; line-height: 1.45; }
+.site-badge { font-size: 9.5px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.3px; padding: 3px 8px; border-radius: 5px; }
+.badge-form { background: #E6F7EC; color: #1A7A3D; }
+.badge-account { background: #FDEEE0; color: #B0521A; }
+.badge-none { background: #F1E6FF; color: #6A1AB0; }
+.site-open-btn {
+font-size: 12px; font-weight: 700; color: #fff; background: linear-gradient(135deg, var(--navy-900), var(--navy-700));
+padding: 9px 17px; border-radius: 9px; text-decoration: none; white-space: nowrap; border: none; cursor: pointer;
+box-shadow: 0 6px 16px -6px rgba(11,23,48,0.4); transition: transform .12s;
+}
+.site-open-btn:hover { transform: translateY(-1px); }
 
-  @keyframes viewFadeIn {
-    from { opacity: 0; transform: translateY(10px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
-  .view-fade { animation: viewFadeIn .4s ease; }
+@keyframes viewFadeIn {
+from { opacity: 0; transform: translateY(10px); }
+to { opacity: 1; transform: translateY(0); }
+}
+.view-fade { animation: viewFadeIn .4s ease; }
 </style>
 </head>
 <body>
 
 <div id="landing">
-  <div class="landing-card">
-    <span class="eyebrow">Student housing, solved</span>
-    <h1 class="wordmark">Room<span>run</span></h1>
-    <p class="tagline">"Finding accommodation was harder than getting accepted to the university." Not this time — live availability from local letting agents, in one place.</p>
-    <div class="city-list" id="cityList"></div>
-    <button class="enter-btn" onclick="enterDashboard()">View Listings →</button>
-  </div>
+<div class="landing-card">
+<span class="eyebrow">Student housing, solved</span>
+<h1 class="wordmark">Room<span>run</span></h1>
+<p class="tagline">"Finding accommodation was harder than getting accepted to the university." Not this time — live availability from local letting agents, in one place.</p>
+<div class="city-list" id="cityList"></div>
+<button class="enter-btn" onclick="enterDashboard()">View Listings →</button>
+</div>
 </div>
 
 <div id="dashboard">
-  <header class="topbar">
-    <div class="brand-row">
-      <div class="brand-mark">R</div>
-      <div class="brand">Roomrun</div>
-    </div>
-    <div class="nav-links">
-      <div class="nav-link" onclick="showAlerts()">🔔 Get Notified</div>
-      <div class="nav-link" onclick="showAddHouse()">🏠 Add a House</div>
-      <div class="city-switch" onclick="showLanding()">📍 <span id="currentCityLabel">St Andrews</span> — change</div>
-    </div>
-  </header>
-  <div class="wrap">
-    <div class="hero">
-      <div class="big" id="bigNum">–</div>
-      <div class="sub">rentals available right now</div>
-      <div class="updated" id="updatedAt"></div>
-      <div><button class="refresh-btn" id="refreshBtn" onclick="runCheck()">Refresh</button></div>
-      <div class="err-note" id="errNote"></div>
-      <div class="sources-strip" id="sourcesStrip"></div>
-    </div>
+<header class="topbar">
+<div class="brand-row">
+<div class="brand-mark">R</div>
+<div class="brand">Roomrun</div>
+</div>
+<div class="nav-links">
+<div class="nav-link" onclick="showAlerts()">🔔 Get Notified</div>
+<div class="nav-link" onclick="showAddHouse()">🏠 Add a House</div>
+<div class="city-switch" onclick="showLanding()">📍 <span id="currentCityLabel">St Andrews</span> — change</div>
+</div>
+</header>
+<div class="wrap">
+<div class="hero">
+<div class="big" id="bigNum">–</div>
+<div class="sub">rentals available right now</div>
+<div class="updated" id="updatedAt"></div>
+<div><button class="refresh-btn" id="refreshBtn" onclick="runCheck()">Refresh</button></div>
+<div class="err-note" id="errNote"></div>
+<div class="sources-strip" id="sourcesStrip"></div>
+</div>
 
-    <div class="controls-row">
-      <div class="filters" id="filters"></div>
-      <div style="display:flex; gap:8px; flex-wrap:wrap;">
-        <select class="sort-select" id="bedsSelect" onchange="onBedsChange()">
-          <option value="All">Beds: Any</option>
-          <option value="0">Studio</option>
-          <option value="1">1 bed</option>
-          <option value="2">2 bed</option>
-          <option value="3">3 bed</option>
-          <option value="4">4 bed</option>
-          <option value="5">5+ bed</option>
-        </select>
-        <select class="sort-select" id="priceMaxSelect" onchange="onPriceMaxChange()">
-          <option value="0">Max price: Any</option>
-          <option value="800">Under £800</option>
-          <option value="1200">Under £1,200</option>
-          <option value="1600">Under £1,600</option>
-          <option value="2000">Under £2,000</option>
-          <option value="3000">Under £3,000</option>
-        </select>
-        <select class="sort-select" id="sortSelect" onchange="onSortChange()">
-          <option value="default">Sort: Default</option>
-          <option value="price-asc">Price: Low to High</option>
-          <option value="price-desc">Price: High to Low</option>
-          <option value="source">Source A–Z</option>
-        </select>
-      </div>
-    </div>
+<div class="controls-row">
+<div class="filters" id="filters"></div>
+<div style="display:flex; gap:8px; flex-wrap:wrap;">
+<select class="sort-select" id="bedsSelect" onchange="onBedsChange()">
+<option value="All">Beds: Any</option>
+<option value="0">Studio</option>
+<option value="1">1 bed</option>
+<option value="2">2 bed</option>
+<option value="3">3 bed</option>
+<option value="4">4 bed</option>
+<option value="5">5+ bed</option>
+</select>
+<select class="sort-select" id="priceMaxSelect" onchange="onPriceMaxChange()">
+<option value="0">Max price: Any</option>
+<option value="800">Under £800</option>
+<option value="1200">Under £1,200</option>
+<option value="1600">Under £1,600</option>
+<option value="2000">Under £2,000</option>
+<option value="3000">Under £3,000</option>
+</select>
+<select class="sort-select" id="sortSelect" onchange="onSortChange()">
+<option value="default">Sort: Default</option>
+<option value="price-asc">Price: Low to High</option>
+<option value="price-desc">Price: High to Low</option>
+<option value="source">Source A–Z</option>
+</select>
+</div>
+</div>
 
-    <div class="card-list" id="list"><div class="empty">Loading…</div></div>
-  </div>
+<div class="card-list" id="list"><div class="empty">Loading…</div></div>
+</div>
 </div>
 
 <div id="alertsView">
-  <header class="topbar">
-    <div class="brand-row"><div class="brand-mark">R</div><div class="brand">Roomrun</div></div>
-    <div class="nav-links"><div class="nav-link" onclick="backToDashboard()">← Back to listings</div></div>
-  </header>
-  <div class="wrap">
-    <div class="panel-block">
-      <div class="panel-eyebrow">Step 1</div>
-      <div class="panel-title">Turn on push notifications</div>
-      <p class="panel-intro">Get pinged the moment a new listing goes up — no need to keep checking back. Works even when the app is closed, once it's installed to your home screen.</p>
-      <button class="save-btn" id="notifyBtn" onclick="enableNotifications()">Enable notifications</button>
-      <span class="save-note" id="notifyNote" style="display:none;"></span>
-    </div>
+<header class="topbar">
+<div class="brand-row"><div class="brand-mark">R</div><div class="brand">Roomrun</div></div>
+<div class="nav-links"><div class="nav-link" onclick="backToDashboard()">← Back to listings</div></div>
+</header>
+<div class="wrap">
+<div class="panel-block">
+<div class="panel-eyebrow">Step 1</div>
+<div class="panel-title">Turn on push notifications</div>
+<p class="panel-intro">Get pinged the moment a new listing goes up — no need to keep checking back. Works even when the app is closed, once it's installed to your home screen.</p>
+<button class="save-btn" id="notifyBtn" onclick="enableNotifications()">Enable notifications</button>
+<span class="save-note" id="notifyNote" style="display:none;"></span>
+</div>
 
-    <div class="panel-block">
-      <div class="panel-eyebrow">Step 2</div>
-      <div class="panel-title">Save your details once</div>
-      <p class="panel-intro">Kept only on this device. Used to skip the typing when you jump to a site's own signup below — nothing is sent anywhere automatically.</p>
-      <div class="field-group">
-        <label class="field-label">Full name</label>
-        <input class="field-input" id="alertName" placeholder="e.g. Boris Metaliaj">
-      </div>
-      <div class="field-group">
-        <label class="field-label">Email</label>
-        <input class="field-input" id="alertEmail" type="email" placeholder="you@st-andrews.ac.uk">
-      </div>
-      <button class="save-btn" onclick="saveMyDetails()">Save details</button>
-      <span class="save-note" id="saveNote" style="display:none;">Saved ✓</span>
-    </div>
+<div class="panel-block">
+<div class="panel-eyebrow">Step 2</div>
+<div class="panel-title">Save your details once</div>
+<p class="panel-intro">Kept only on this device. Used to skip the typing when you jump to a site's own signup below — nothing is sent anywhere automatically.</p>
+<div class="field-group">
+<label class="field-label">Full name</label>
+<input class="field-input" id="alertName" placeholder="e.g. Boris Metaliaj">
+</div>
+<div class="field-group">
+<label class="field-label">Email</label>
+<input class="field-input" id="alertEmail" type="email" placeholder="you@st-andrews.ac.uk">
+</div>
+<button class="save-btn" onclick="saveMyDetails()">Save details</button>
+<span class="save-note" id="saveNote" style="display:none;">Saved ✓</span>
+</div>
 
-    <div class="panel-block">
-      <div class="panel-eyebrow">Step 3</div>
-      <div class="panel-title">Sign up for each site's real alerts</div>
-      <p class="panel-intro">I can't submit these on your behalf — most either need a free account or use a bot-protected form, so a silent auto-signup wouldn't reliably work and you'd never see what you agreed to. What I can do: get you straight to the right page, one click, no hunting.</p>
-      <div id="siteCards"></div>
-    </div>
-  </div>
+<div class="panel-block">
+<div class="panel-eyebrow">Step 3</div>
+<div class="panel-title">Sign up for each site's real alerts</div>
+<p class="panel-intro">I can't submit these on your behalf — most either need a free account or use a bot-protected form, so a silent auto-signup wouldn't reliably work and you'd never see what you agreed to. What I can do: get you straight to the right page, one click, no hunting.</p>
+<div id="siteCards"></div>
+</div>
+</div>
 </div>
 
 <div id="reportView">
-  <header class="topbar">
-    <div class="brand-row"><div class="brand-mark">R</div><div class="brand">Roomrun</div></div>
-    <div class="nav-links"><div class="nav-link" onclick="backToDashboard()">← Back to listings</div></div>
-  </header>
-  <div class="wrap">
-    <div class="panel-block">
-      <div class="panel-eyebrow">Add a house</div>
-      <div class="panel-title">Got a house to add?</div>
-      <p class="panel-intro">If you know of a place that's free and not showing up here, add it below — it'll appear on the list for everyone else looking too, tagged "Added by students" so people know it's a student find, not an agency listing.</p>
-      <div class="field-group">
-        <label class="field-label">Address / description</label>
-        <input class="field-input" id="reportAddr" placeholder="e.g. 2-bed flat, Market Street">
-      </div>
-      <div class="field-group">
-        <label class="field-label">Price (if known)</label>
-        <input class="field-input" id="reportPrice" placeholder="e.g. £1,600 pcm">
-      </div>
-      <div class="field-group">
-        <label class="field-label">Bedrooms (if known)</label>
-        <input class="field-input" id="reportBeds" placeholder="e.g. 3" inputmode="numeric">
-      </div>
-      <div class="field-group">
-        <label class="field-label">Contact (optional)</label>
-        <input class="field-input" id="reportLink" placeholder="e.g. your email, or a link where people can find out more">
-      </div>
-      <button class="save-btn" onclick="submitReport()">Add to the list</button>
-      <span class="save-note" id="reportNote" style="display:none;"></span>
-    </div>
-  </div>
+<header class="topbar">
+<div class="brand-row"><div class="brand-mark">R</div><div class="brand">Roomrun</div></div>
+<div class="nav-links"><div class="nav-link" onclick="backToDashboard()">← Back to listings</div></div>
+</header>
+<div class="wrap">
+<div class="panel-block">
+<div class="panel-eyebrow">Add a house</div>
+<div class="panel-title">Got a house to add?</div>
+<p class="panel-intro">If you know of a place that's free and not showing up here, add it below — it'll appear on the list for everyone else looking too, tagged "Added by students" so people know it's a student find, not an agency listing.</p>
+<div class="field-group">
+<label class="field-label">Address / description</label>
+<input class="field-input" id="reportAddr" placeholder="e.g. 2-bed flat, Market Street">
+</div>
+<div class="field-group">
+<label class="field-label">Price (if known)</label>
+<input class="field-input" id="reportPrice" placeholder="e.g. £1,600 pcm">
+</div>
+<div class="field-group">
+<label class="field-label">Bedrooms (if known)</label>
+<input class="field-input" id="reportBeds" placeholder="e.g. 3" inputmode="numeric">
+</div>
+<div class="field-group">
+<label class="field-label">Contact (optional)</label>
+<input class="field-input" id="reportLink" placeholder="e.g. your email, or a link where people can find out more">
+</div>
+<button class="save-btn" onclick="submitReport()">Add to the list</button>
+<span class="save-note" id="reportNote" style="display:none;"></span>
+</div>
+</div>
 </div>
 
 <script>
 // --- PWA install + push notifications ---
 if ('serviceWorker' in navigator) {
-  window.addEventListener('load', () => {
-    navigator.serviceWorker.register('/sw.js').catch(err => console.warn('SW registration failed', err));
-  });
+window.addEventListener('load', () => {
+navigator.serviceWorker.register('/sw.js').catch(err => console.warn('SW registration failed', err));
+});
 }
 
 const VAPID_PUBLIC_KEY = 'BAGVrK9U73i8lsibBbwShBRVhExBFL0jAQNrfKPAMEJ9D-N1x3XWwbhUOWha9pcYwadA83EPiEflfu9BSMEy774';
 
 function urlBase64ToUint8Array(base64String) {
-  const padding = '='.repeat((4 - (base64String.length % 4)) % 4);
-  const base64 = (base64String + padding).replace(/-/g, '+').replace(/_/g, '/');
-  const rawData = atob(base64);
-  return Uint8Array.from([...rawData].map(c => c.charCodeAt(0)));
+const padding = '='.repeat((4 - (base64String.length % 4)) % 4);
+const base64 = (base64String + padding).replace(/-/g, '+').replace(/_/g, '/');
+const rawData = atob(base64);
+return Uint8Array.from([...rawData].map(c => c.charCodeAt(0)));
 }
 
 async function enableNotifications() {
-  const btn = document.getElementById('notifyBtn');
-  const note = document.getElementById('notifyNote');
-  if (!('serviceWorker' in navigator) || !('PushManager' in window)) {
-    note.textContent = 'Push isn\'t supported in this browser.';
-    note.style.display = 'inline';
-    return;
-  }
-  btn.disabled = true; btn.textContent = 'Enabling…';
-  try {
-    const permission = await Notification.requestPermission();
-    if (permission !== 'granted') {
-      note.textContent = 'Notifications blocked — enable them in your browser settings to use this.';
-      note.style.display = 'inline';
-      btn.disabled = false; btn.textContent = 'Enable notifications';
-      return;
-    }
-    const reg = await navigator.serviceWorker.ready;
-    let sub = await reg.pushManager.getSubscription();
-    if (!sub) {
-      sub = await reg.pushManager.subscribe({
-        userVisibleOnly: true,
-        applicationServerKey: urlBase64ToUint8Array(VAPID_PUBLIC_KEY)
-      });
-    }
-    await fetch('/api/subscribe', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(sub)
-    });
-    note.textContent = 'Notifications on ✓';
-    note.style.display = 'inline';
-    btn.textContent = 'Enabled';
-  } catch (e) {
-    note.textContent = 'Something went wrong — try again.';
-    note.style.display = 'inline';
-    btn.disabled = false; btn.textContent = 'Enable notifications';
-  }
+const btn = document.getElementById('notifyBtn');
+const note = document.getElementById('notifyNote');
+if (!('serviceWorker' in navigator) || !('PushManager' in window)) {
+note.textContent = 'Push isn\'t supported in this browser.';
+note.style.display = 'inline';
+return;
+}
+btn.disabled = true; btn.textContent = 'Enabling…';
+try {
+const permission = await Notification.requestPermission();
+if (permission !== 'granted') {
+note.textContent = 'Notifications blocked — enable them in your browser settings to use this.';
+note.style.display = 'inline';
+btn.disabled = false; btn.textContent = 'Enable notifications';
+return;
+}
+const reg = await navigator.serviceWorker.ready;
+let sub = await reg.pushManager.getSubscription();
+if (!sub) {
+sub = await reg.pushManager.subscribe({
+userVisibleOnly: true,
+applicationServerKey: urlBase64ToUint8Array(VAPID_PUBLIC_KEY)
+});
+}
+await fetch('/api/subscribe', {
+method: 'POST',
+headers: { 'Content-Type': 'application/json' },
+body: JSON.stringify(sub)
+});
+note.textContent = 'Notifications on ✓';
+note.style.display = 'inline';
+btn.textContent = 'Enabled';
+} catch (e) {
+note.textContent = 'Something went wrong — try again.';
+note.style.display = 'inline';
+btn.disabled = false; btn.textContent = 'Enable notifications';
+}
 }
 
 const CITIES = [
-  { name: 'St Andrews', available: true },
-  { name: 'Edinburgh', available: true },
-  { name: 'Durham', available: true },
-  { name: 'Bath', available: true },
-  { name: 'York', available: true },
-  { name: 'Exeter', available: true },
-  { name: 'Glasgow', available: false }
+{ name: 'St Andrews', available: true },
+{ name: 'Edinburgh', available: true },
+{ name: 'Durham', available: true },
+{ name: 'Bath', available: true },
+{ name: 'York', available: true },
+{ name: 'Exeter', available: true },
+{ name: 'Glasgow', available: false }
 ];
 let selectedCity = 'St Andrews';
 
 function renderCityList() {
-  const el = document.getElementById('cityList');
-  el.innerHTML = '';
-  CITIES.forEach(c => {
-    const div = document.createElement('div');
-    div.className = 'city-option' + (c.name === selectedCity ? ' active' : '') + (c.available ? '' : ' disabled');
-    div.innerHTML = `
-      <div class="city-name-row"><span class="radio-dot"></span><span class="name">${c.name}</span></div>
-      <span class="tag">${c.available ? (c.name === selectedCity ? 'Selected' : 'Available') : 'Coming soon'}</span>
-    `;
-    if (c.available) {
-      div.onclick = () => { selectedCity = c.name; renderCityList(); };
-    }
-    el.appendChild(div);
-  });
+const el = document.getElementById('cityList');
+el.innerHTML = '';
+CITIES.forEach(c => {
+const div = document.createElement('div');
+div.className = 'city-option' + (c.name === selectedCity ? ' active' : '') + (c.available ? '' : ' disabled');
+div.innerHTML = `
+<div class="city-name-row"><span class="radio-dot"></span><span class="name">${c.name}</span></div>
+<span class="tag">${c.available ? (c.name === selectedCity ? 'Selected' : 'Available') : 'Coming soon'}</span>
+`;
+if (c.available) {
+div.onclick = () => { selectedCity = c.name; renderCityList(); };
+}
+el.appendChild(div);
+});
 }
 renderCityList();
 
 function playFade(id) {
-  const el = document.getElementById(id);
-  el.classList.remove('view-fade');
-  void el.offsetWidth;
-  el.classList.add('view-fade');
+const el = document.getElementById(id);
+el.classList.remove('view-fade');
+void el.offsetWidth;
+el.classList.add('view-fade');
 }
 
 function enterDashboard() {
-  document.getElementById('landing').style.display = 'none';
-  document.getElementById('dashboard').style.display = 'block';
-  document.getElementById('currentCityLabel').textContent = selectedCity;
-  playFade('dashboard');
-  runCheck();
+document.getElementById('landing').style.display = 'none';
+document.getElementById('dashboard').style.display = 'block';
+document.getElementById('currentCityLabel').textContent = selectedCity;
+playFade('dashboard');
+runCheck();
 }
 
 function showLanding() {
-  hideAllViews();
-  document.getElementById('landing').style.display = 'flex';
-  renderCityList();
-  playFade('landing');
+hideAllViews();
+document.getElementById('landing').style.display = 'flex';
+renderCityList();
+playFade('landing');
 }
 
 function hideAllViews() {
-  ['landing', 'dashboard', 'alertsView', 'reportView'].forEach(id => {
-    document.getElementById(id).style.display = 'none';
-  });
+['landing', 'dashboard', 'alertsView', 'reportView'].forEach(id => {
+document.getElementById(id).style.display = 'none';
+});
 }
 
 function backToDashboard() {
-  hideAllViews();
-  document.getElementById('dashboard').style.display = 'block';
-  playFade('dashboard');
+hideAllViews();
+document.getElementById('dashboard').style.display = 'block';
+playFade('dashboard');
 }
 
 // --- Get Notified: save details locally, then one-click through to each site's real signup ---
 const ALERT_SITES = [
-  {
-    name: 'Lawson & Thompson',
-    kind: 'form', badge: 'Real form',
-    note: 'Genuine email-alert signup — name, email, graduation year. ~20 seconds.',
-    url: 'https://www.lawsonthompson.co.uk/email-alerts/'
-  },
-  {
-    name: 'Rightmove',
-    kind: 'account', badge: 'Needs account',
-    note: 'Search loads pre-filtered to St Andrews. Click "Create Alert" near the top — needs a free My Rightmove account.',
-    url: 'https://www.rightmove.co.uk/property-to-rent/St-Andrews.html'
-  },
-  {
-    name: 'OnTheMarket',
-    kind: 'account', badge: 'Needs account',
-    note: 'Search loads pre-filtered to St Andrews. Look for "Get instant alerts" — needs a free account.',
-    url: 'https://www.onthemarket.com/to-rent/property/st-andrews/'
-  },
-  {
-    name: 'Zoopla',
-    kind: 'account', badge: 'Needs account',
-    note: 'Type "St Andrews" in the search box, then click "Create alert" — needs a free account.',
-    url: 'https://www.zoopla.co.uk/to-rent/'
-  },
-  {
-    name: 'Studentpad (University portal)',
-    kind: 'account', badge: 'Needs uni login',
-    note: 'Official University of St Andrews portal — log in with your university account, then save a search.',
-    url: 'https://www.standrewsstudentpad.co.uk/Accommodation'
-  },
-  {
-    name: 'SpareRoom',
-    kind: 'form', badge: 'Free, no login for alerts',
-    note: 'Search loads pre-filtered to St Andrews rooms. Click "Save this search for alerts" — just an email, no account needed to receive them.',
-    url: 'https://www.spareroom.co.uk/flatshare/fife/st._andrews?share_type=S'
-  },
-  {
-    name: 'St Andrews Property Lets / Bradburne & Co / 55Rent / HMJ Properties',
-    kind: 'none', badge: 'No alert system',
-    note: 'These smaller agents don\'t have an email-alert signup at all — that\'s the actual gap this dashboard fills for them. HMJ specifically wants enquiries by email (hmj@hmjproperties.co.uk) with the property name in the subject line.',
-    url: 'https://www.bradburne.co.uk/lettings/fife/st-andrews/'
-  }
+{
+name: 'Lawson & Thompson',
+kind: 'form', badge: 'Real form',
+note: 'Genuine email-alert signup — name, email, graduation year. ~20 seconds.',
+url: 'https://www.lawsonthompson.co.uk/email-alerts/'
+},
+{
+name: 'Rightmove',
+kind: 'account', badge: 'Needs account',
+note: 'Search loads pre-filtered to St Andrews. Click "Create Alert" near the top — needs a free My Rightmove account.',
+url: 'https://www.rightmove.co.uk/property-to-rent/St-Andrews.html'
+},
+{
+name: 'OnTheMarket',
+kind: 'account', badge: 'Needs account',
+note: 'Search loads pre-filtered to St Andrews. Look for "Get instant alerts" — needs a free account.',
+url: 'https://www.onthemarket.com/to-rent/property/st-andrews/'
+},
+{
+name: 'Zoopla',
+kind: 'account', badge: 'Needs account',
+note: 'Type "St Andrews" in the search box, then click "Create alert" — needs a free account.',
+url: 'https://www.zoopla.co.uk/to-rent/'
+},
+{
+name: 'Studentpad (University portal)',
+kind: 'account', badge: 'Needs uni login',
+note: 'Official University of St Andrews portal — log in with your university account, then save a search.',
+url: 'https://www.standrewsstudentpad.co.uk/Accommodation'
+},
+{
+name: 'SpareRoom',
+kind: 'form', badge: 'Free, no login for alerts',
+note: 'Search loads pre-filtered to St Andrews rooms. Click "Save this search for alerts" — just an email, no account needed to receive them.',
+url: 'https://www.spareroom.co.uk/flatshare/fife/st._andrews?share_type=S'
+},
+{
+name: 'St Andrews Property Lets / Bradburne & Co / 55Rent / HMJ Properties',
+kind: 'none', badge: 'No alert system',
+note: 'These smaller agents don\'t have an email-alert signup at all — that\'s the actual gap this dashboard fills for them. HMJ specifically wants enquiries by email (hmj@hmjproperties.co.uk) with the property name in the subject line.',
+url: 'https://www.bradburne.co.uk/lettings/fife/st-andrews/'
+}
 ];
 
 function renderSiteCards() {
-  const el = document.getElementById('siteCards');
-  el.innerHTML = '';
-  ALERT_SITES.forEach(site => {
-    const badgeClass = site.kind === 'form' ? 'badge-form' : (site.kind === 'account' ? 'badge-account' : 'badge-none');
-    const card = document.createElement('div');
-    card.className = 'site-card';
-    card.innerHTML = `
-      <div class="card-main">
-        <div class="site-name">${site.name}<span class="site-badge ${badgeClass}">${site.badge}</span></div>
-        <div class="site-note">${site.note}</div>
-      </div>
-      <a class="site-open-btn" href="${site.url}" target="_blank">Open →</a>
-    `;
-    el.appendChild(card);
-  });
+const el = document.getElementById('siteCards');
+el.innerHTML = '';
+ALERT_SITES.forEach(site => {
+const badgeClass = site.kind === 'form' ? 'badge-form' : (site.kind === 'account' ? 'badge-account' : 'badge-none');
+const card = document.createElement('div');
+card.className = 'site-card';
+card.innerHTML = `
+<div class="card-main">
+<div class="site-name">${site.name}<span class="site-badge ${badgeClass}">${site.badge}</span></div>
+<div class="site-note">${site.note}</div>
+</div>
+<a class="site-open-btn" href="${site.url}" target="_blank">Open →</a>
+`;
+el.appendChild(card);
+});
 }
 
 function showAlerts() {
-  hideAllViews();
-  document.getElementById('alertsView').style.display = 'block';
-  loadMyDetails();
-  renderSiteCards();
-  playFade('alertsView');
+hideAllViews();
+document.getElementById('alertsView').style.display = 'block';
+loadMyDetails();
+renderSiteCards();
+playFade('alertsView');
 }
 
 function saveMyDetails() {
-  const name = document.getElementById('alertName').value.trim();
-  const email = document.getElementById('alertEmail').value.trim();
-  localStorage.setItem('rw_name', name);
-  localStorage.setItem('rw_email', email);
-  const note = document.getElementById('saveNote');
-  note.style.display = 'inline';
-  setTimeout(() => { note.style.display = 'none'; }, 2500);
+const name = document.getElementById('alertName').value.trim();
+const email = document.getElementById('alertEmail').value.trim();
+localStorage.setItem('rw_name', name);
+localStorage.setItem('rw_email', email);
+const note = document.getElementById('saveNote');
+note.style.display = 'inline';
+setTimeout(() => { note.style.display = 'none'; }, 2500);
 }
 
 function loadMyDetails() {
-  document.getElementById('alertName').value = localStorage.getItem('rw_name') || '';
-  document.getElementById('alertEmail').value = localStorage.getItem('rw_email') || '';
+document.getElementById('alertName').value = localStorage.getItem('rw_name') || '';
+document.getElementById('alertEmail').value = localStorage.getItem('rw_email') || '';
 }
 
 // --- Add a House: students self-submit a listing straight into the app, no moderation queue —
 // it's tagged "Added by students" so it's clearly distinguished from agency-checked sources. ---
 function showAddHouse() {
-  hideAllViews();
-  document.getElementById('reportView').style.display = 'block';
-  playFade('reportView');
+hideAllViews();
+document.getElementById('reportView').style.display = 'block';
+playFade('reportView');
 }
 
 async function submitReport() {
-  const addr = document.getElementById('reportAddr').value.trim();
-  const price = document.getElementById('reportPrice').value.trim();
-  const beds = document.getElementById('reportBeds').value.trim();
-  const contact = document.getElementById('reportLink').value.trim();
-  const note = document.getElementById('reportNote');
+const addr = document.getElementById('reportAddr').value.trim();
+const price = document.getElementById('reportPrice').value.trim();
+const beds = document.getElementById('reportBeds').value.trim();
+const contact = document.getElementById('reportLink').value.trim();
+const note = document.getElementById('reportNote');
 
-  if (!addr) {
-    note.textContent = 'Add an address or description first.';
-    note.style.display = 'inline';
-    return;
-  }
+if (!addr) {
+note.textContent = 'Add an address or description first.';
+note.style.display = 'inline';
+return;
+}
 
-  try {
-    const res = await fetch('/api/submit-listing', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ city: selectedCity, address: addr, price, beds, contact })
-    });
-    if (!res.ok) throw new Error('request failed');
-    note.textContent = 'Added ✓ — it\'s on the list now.';
-    note.style.display = 'inline';
-    document.getElementById('reportAddr').value = '';
-    document.getElementById('reportPrice').value = '';
-    document.getElementById('reportBeds').value = '';
-    document.getElementById('reportLink').value = '';
-  } catch (e) {
-    note.textContent = 'Something went wrong — try again.';
-    note.style.display = 'inline';
-  }
+try {
+const res = await fetch('/api/submit-listing', {
+method: 'POST',
+headers: { 'Content-Type': 'application/json' },
+body: JSON.stringify({ city: selectedCity, address: addr, price, beds, contact })
+});
+if (!res.ok) throw new Error('request failed');
+note.textContent = 'Added ✓ — it\'s on the list now.';
+note.style.display = 'inline';
+document.getElementById('reportAddr').value = '';
+document.getElementById('reportPrice').value = '';
+document.getElementById('reportBeds').value = '';
+document.getElementById('reportLink').value = '';
+} catch (e) {
+note.textContent = 'Something went wrong — try again.';
+note.style.display = 'inline';
+}
 }
 
 // Rightmove, OnTheMarket and SpareRoom all explicitly prohibit scraping in their Terms of Use,
 // so these are a manually curated snapshot (not auto-refreshed) rather than a live check.
-// Rightmove + SpareRoom blocks last refreshed live by hand 2026-07-15.
+// Rightmove + SpareRoom blocks last refreshed live by hand 2026-07-15. OnTheMarket block
+// re-refreshed 2026-07-15 (was showing only 1 of ~17 live listings — expanded to the full set).
 const STATIC_LISTINGS_STA = [
-  { source: 'Rightmove', tag: 'src-rm', address: 'St Andrews Hall, St Andrews, KY16', beds: 1, baths: 1, price: '£1,296 pcm', url: 'https://www.rightmove.co.uk/property-to-rent/St-Andrews.html' },
-  { source: 'Rightmove', tag: 'src-rm', address: '7 Carron Place, St Andrews, Fife, KY16', beds: 3, baths: 1, price: '£1,985 pcm', url: 'https://www.rightmove.co.uk/property-to-rent/St-Andrews.html' },
-  { source: 'Rightmove', tag: 'src-rm', address: 'Abbey Street, St Andrews, Fife', beds: 2, baths: 1, price: '£1,600 pcm', url: 'https://www.rightmove.co.uk/property-to-rent/St-Andrews.html' },
-  { source: 'Rightmove', tag: 'src-rm', address: 'Lumsden Crescent, St Andrews', beds: 4, baths: 2, price: '£1,850 pcm', url: 'https://www.rightmove.co.uk/property-to-rent/St-Andrews.html' },
-  { source: 'Rightmove', tag: 'src-rm', address: 'Bobby Jones Place, St Andrews, Fife, KY16', beds: 2, baths: 1, price: '£1,700 pcm', url: 'https://www.rightmove.co.uk/property-to-rent/St-Andrews.html' },
-  { source: 'Rightmove', tag: 'src-rm', address: 'St Leonards Fields House, Abbey Walk, St Andrews, KY16', beds: 2, baths: 2, price: '£2,990 pcm', url: 'https://www.rightmove.co.uk/property-to-rent/St-Andrews.html' },
-  { source: 'Rightmove', tag: 'src-rm', address: 'Morton Crescent, St Andrews', beds: 3, baths: 1, price: '£1,650 pcm', url: 'https://www.rightmove.co.uk/property-to-rent/St-Andrews.html' },
-  { source: 'Rightmove', tag: 'src-rm', address: 'Lamond Drive, St Andrews, Fife, KY16', beds: 4, baths: null, price: '£3,300 pcm', url: 'https://www.rightmove.co.uk/property-to-rent/St-Andrews.html' },
-  { source: 'Rightmove', tag: 'src-rm', address: 'Sandyhill Road, St Andrews, KY16', beds: 2, baths: 1, price: '£1,700 pcm', url: 'https://www.rightmove.co.uk/property-to-rent/St-Andrews.html' },
-  { source: 'OnTheMarket', tag: 'src-otm', address: '7 Carron Place, St. Andrews, Fife, KY16', beds: 3, baths: 1, price: '£1,985 pcm', url: 'https://www.onthemarket.com/to-rent/property/st-andrews/' },
-  { source: 'SpareRoom', tag: 'src-spr', address: 'St. Andrews furnished room, all bills inc. (KY16)', beds: null, baths: null, price: '£1,000 pcm', url: 'https://www.spareroom.co.uk/flatshare/fife/st._andrews/2502220' },
-  { source: 'SpareRoom', tag: 'src-spr', address: 'Sandyherd Court — 2-bed apartment (KY16)', beds: 2, baths: null, price: '£925 pcm', url: 'https://www.spareroom.co.uk/flatshare/fife/st._andrews/17404101' },
-  { source: 'SpareRoom', tag: 'src-spr', address: 'Room near East Sands (KY16)', beds: null, baths: null, price: '£750 pcm', url: 'https://www.spareroom.co.uk/flatshare/fife/st._andrews/8288086' },
-  { source: 'SpareRoom', tag: 'src-spr', address: 'Bobby Jones Apartment — 2-bed flat', beds: 2, baths: null, price: '£775 pcm', url: 'https://www.spareroom.co.uk/flatshare/fife/st._andrews/17296613' },
-  { source: 'SpareRoom', tag: 'src-spr', address: 'Room in two-bedroom flat, 10 min to town', beds: null, baths: null, price: '£750 pcm', url: 'https://www.spareroom.co.uk/flatshare/fife/st._andrews/17484242' },
-  { source: 'SpareRoom', tag: 'src-spr', address: 'Room, quiet setting (KY16)', beds: null, baths: null, price: '£595 pcm', url: 'https://www.spareroom.co.uk/flatshare/fife/st._andrews/8317123' }
+{ source: 'Rightmove', tag: 'src-rm', address: 'St Andrews Hall, St Andrews, KY16', beds: 1, baths: 1, price: '£1,296 pcm', url: 'https://www.rightmove.co.uk/property-to-rent/St-Andrews.html' },
+{ source: 'Rightmove', tag: 'src-rm', address: '7 Carron Place, St Andrews, Fife, KY16', beds: 3, baths: 1, price: '£1,985 pcm', url: 'https://www.rightmove.co.uk/property-to-rent/St-Andrews.html' },
+{ source: 'Rightmove', tag: 'src-rm', address: 'Abbey Street, St Andrews, Fife', beds: 2, baths: 1, price: '£1,600 pcm', url: 'https://www.rightmove.co.uk/property-to-rent/St-Andrews.html' },
+{ source: 'Rightmove', tag: 'src-rm', address: 'Lumsden Crescent, St Andrews', beds: 4, baths: 2, price: '£1,850 pcm', url: 'https://www.rightmove.co.uk/property-to-rent/St-Andrews.html' },
+{ source: 'Rightmove', tag: 'src-rm', address: 'Bobby Jones Place, St Andrews, Fife, KY16', beds: 2, baths: 1, price: '£1,700 pcm', url: 'https://www.rightmove.co.uk/property-to-rent/St-Andrews.html' },
+{ source: 'Rightmove', tag: 'src-rm', address: 'St Leonards Fields House, Abbey Walk, St Andrews, KY16', beds: 2, baths: 2, price: '£2,990 pcm', url: 'https://www.rightmove.co.uk/property-to-rent/St-Andrews.html' },
+{ source: 'Rightmove', tag: 'src-rm', address: 'Morton Crescent, St Andrews', beds: 3, baths: 1, price: '£1,650 pcm', url: 'https://www.rightmove.co.uk/property-to-rent/St-Andrews.html' },
+{ source: 'Rightmove', tag: 'src-rm', address: 'Lamond Drive, St Andrews, Fife, KY16', beds: 4, baths: null, price: '£3,300 pcm', url: 'https://www.rightmove.co.uk/property-to-rent/St-Andrews.html' },
+{ source: 'Rightmove', tag: 'src-rm', address: 'Sandyhill Road, St Andrews, KY16', beds: 2, baths: 1, price: '£1,700 pcm', url: 'https://www.rightmove.co.uk/property-to-rent/St-Andrews.html' },
+{ source: 'OnTheMarket', tag: 'src-otm', address: '7 Carron Place, St. Andrews, Fife, KY16', beds: 3, baths: 1, price: '£1,985 pcm', url: 'https://www.onthemarket.com/details/19931593/' },
+{ source: 'OnTheMarket', tag: 'src-otm', address: 'Chamberlain Street, Fife', beds: 2, baths: 1, price: '£1,650 pcm', url: 'https://www.onthemarket.com/details/19936927/' },
+{ source: 'OnTheMarket', tag: 'src-otm', address: 'St Andrews Hall, St Andrews, KY16', beds: 1, baths: 1, price: '£1,296 pcm', url: 'https://www.onthemarket.com/details/19933314/' },
+{ source: 'OnTheMarket', tag: 'src-otm', address: 'St Andrews Hall, St Andrews, KY16 (room only)', beds: 1, baths: null, price: '£1,235 pcm', url: 'https://www.onthemarket.com/details/19933244/' },
+{ source: 'OnTheMarket', tag: 'src-otm', address: 'East Sands, St Andrews, KY16 (room in shared flat)', beds: 1, baths: null, price: '£1,027 pcm', url: 'https://www.onthemarket.com/details/19932521/' },
+{ source: 'OnTheMarket', tag: 'src-otm', address: 'Abbey Court, Fife', beds: 1, baths: 1, price: '£1,000 pcm', url: 'https://www.onthemarket.com/details/19925793/' },
+{ source: 'OnTheMarket', tag: 'src-otm', address: 'Balrymonth Court, Fife', beds: 4, baths: 4, price: '£1,600 pcm', url: 'https://www.onthemarket.com/details/19891713/' },
+{ source: 'OnTheMarket', tag: 'src-otm', address: 'Doocot Road, Fife', beds: 2, baths: 1, price: '£1,600 pcm', url: 'https://www.onthemarket.com/details/19821409/' },
+{ source: 'OnTheMarket', tag: 'src-otm', address: 'St Leonards Fields House, Abbey Walk, St Andrews, KY16', beds: 2, baths: 2, price: '£2,990 pcm', url: 'https://www.onthemarket.com/details/19730342/' },
+{ source: 'OnTheMarket', tag: 'src-otm', address: 'Bell Brae, St Andrews, KY16', beds: 2, baths: 2, price: '£2,100 pcm', url: 'https://www.onthemarket.com/details/16997486/' },
+{ source: 'OnTheMarket', tag: 'src-otm', address: 'Kennedy Gardens, St Andrews, Fife', beds: 5, baths: 2, price: '£3,200 pcm', url: 'https://www.onthemarket.com/details/19678832/' },
+{ source: 'OnTheMarket', tag: 'src-otm', address: 'Winram Place "Annex", Fife', beds: 1, baths: 1, price: '£1,200 pcm', url: 'https://www.onthemarket.com/details/19611889/' },
+{ source: 'OnTheMarket', tag: 'src-otm', address: 'Bell Brae, St Andrews, Fife', beds: 2, baths: 2, price: '£2,400 pcm', url: 'https://www.onthemarket.com/details/19540708/' },
+{ source: 'OnTheMarket', tag: 'src-otm', address: 'Lamberton Place, Fife', beds: 2, baths: 1, price: '£1,500 pcm', url: 'https://www.onthemarket.com/details/19372387/' },
+{ source: 'OnTheMarket', tag: 'src-otm', address: 'Letham Place, Fife', beds: 2, baths: 1, price: '£1,400 pcm', url: 'https://www.onthemarket.com/details/18922430/' },
+{ source: 'OnTheMarket', tag: 'src-otm', address: 'Kilrymont Road, St Andrews, Fife (studio)', beds: 1, baths: null, price: '£1,296 pcm', url: 'https://www.onthemarket.com/details/17551938/' },
+{ source: 'OnTheMarket', tag: 'src-otm', address: 'Sandyhill Road, St. Andrews, KY16', beds: 2, baths: 1, price: '£1,700 pcm', url: 'https://www.onthemarket.com/details/19418373/' },
+{ source: 'SpareRoom', tag: 'src-spr', address: 'St. Andrews furnished room, all bills inc. (KY16)', beds: null, baths: null, price: '£1,000 pcm', url: 'https://www.spareroom.co.uk/flatshare/fife/st._andrews/2502220' },
+{ source: 'SpareRoom', tag: 'src-spr', address: 'Sandyherd Court — 2-bed apartment (KY16)', beds: 2, baths: null, price: '£925 pcm', url: 'https://www.spareroom.co.uk/flatshare/fife/st._andrews/17404101' },
+{ source: 'SpareRoom', tag: 'src-spr', address: 'Room near East Sands (KY16)', beds: null, baths: null, price: '£750 pcm', url: 'https://www.spareroom.co.uk/flatshare/fife/st._andrews/8288086' },
+{ source: 'SpareRoom', tag: 'src-spr', address: 'Bobby Jones Apartment — 2-bed flat', beds: 2, baths: null, price: '£775 pcm', url: 'https://www.spareroom.co.uk/flatshare/fife/st._andrews/17296613' },
+{ source: 'SpareRoom', tag: 'src-spr', address: 'Room in two-bedroom flat, 10 min to town', beds: null, baths: null, price: '£750 pcm', url: 'https://www.spareroom.co.uk/flatshare/fife/st._andrews/17484242' },
+{ source: 'SpareRoom', tag: 'src-spr', address: 'Room, quiet setting (KY16)', beds: null, baths: null, price: '£595 pcm', url: 'https://www.spareroom.co.uk/flatshare/fife/st._andrews/8317123' }
 ];
 
 // Edinburgh: Rightmove's dedicated student-accommodation search shows 312 results across 13
@@ -670,106 +687,106 @@ const STATIC_LISTINGS_STA = [
 // independent Edinburgh agent has been found live-fetchable yet (Umega, Cullen Property, Domus
 // and Citylets are all JS-rendered or scraping-restricted) — still looking.
 const STATIC_LISTINGS_EDI = [
-  { source: 'Rightmove', tag: 'src-rm', address: 'South Oxford Street, Newington, EH8', beds: 3, baths: 1, price: '£2,325 pcm', url: 'https://www.rightmove.co.uk/student-accommodation/Edinburgh.html' },
-  { source: 'Rightmove', tag: 'src-rm', address: 'East Suffolk Park, Newington, Edinburgh', beds: 2, baths: 1, price: '£1,650 pcm', url: 'https://www.rightmove.co.uk/student-accommodation/Edinburgh.html' },
-  { source: 'Rightmove', tag: 'src-rm', address: 'Causewayside, Newington, EH9', beds: 3, baths: 1, price: '£2,275 pcm', url: 'https://www.rightmove.co.uk/student-accommodation/Edinburgh.html' },
-  { source: 'Rightmove', tag: 'src-rm', address: 'Montpelier Park, Bruntsfield, EH10', beds: 3, baths: 1, price: '£2,175 pcm', url: 'https://www.rightmove.co.uk/student-accommodation/Edinburgh.html' },
-  { source: 'Rightmove', tag: 'src-rm', address: 'Bruntsfield Avenue, Bruntsfield, EH10', beds: 4, baths: 1, price: '£2,600 pcm', url: 'https://www.rightmove.co.uk/student-accommodation/Edinburgh.html' },
-  { source: 'Rightmove', tag: 'src-rm', address: 'Dalry Road, Dalry, EH11', beds: 2, baths: 1, price: '£1,400 pcm', url: 'https://www.rightmove.co.uk/student-accommodation/Edinburgh.html' },
-  { source: 'Rightmove', tag: 'src-rm', address: 'Logie Green Road, Canonmills, EH7', beds: 3, baths: 1, price: '£1,650 pcm', url: 'https://www.rightmove.co.uk/student-accommodation/Edinburgh.html' },
-  { source: 'Rightmove', tag: 'src-rm', address: 'Murano Place, off Leith Walk, EH7', beds: 3, baths: 2, price: '£2,275 pcm', url: 'https://www.rightmove.co.uk/student-accommodation/Edinburgh.html' },
-  { source: 'Rightmove', tag: 'src-rm', address: 'Buchanan Street, Leith, EH6', beds: 1, baths: null, price: '£895 pcm', url: 'https://www.rightmove.co.uk/student-accommodation/Edinburgh.html' },
-  { source: 'Rightmove', tag: 'src-rm', address: 'Montpelier Park, EH10', beds: 3, baths: 1, price: '£2,600 pcm', url: 'https://www.rightmove.co.uk/student-accommodation/Edinburgh.html' }
+{ source: 'Rightmove', tag: 'src-rm', address: 'South Oxford Street, Newington, EH8', beds: 3, baths: 1, price: '£2,325 pcm', url: 'https://www.rightmove.co.uk/student-accommodation/Edinburgh.html' },
+{ source: 'Rightmove', tag: 'src-rm', address: 'East Suffolk Park, Newington, Edinburgh', beds: 2, baths: 1, price: '£1,650 pcm', url: 'https://www.rightmove.co.uk/student-accommodation/Edinburgh.html' },
+{ source: 'Rightmove', tag: 'src-rm', address: 'Causewayside, Newington, EH9', beds: 3, baths: 1, price: '£2,275 pcm', url: 'https://www.rightmove.co.uk/student-accommodation/Edinburgh.html' },
+{ source: 'Rightmove', tag: 'src-rm', address: 'Montpelier Park, Bruntsfield, EH10', beds: 3, baths: 1, price: '£2,175 pcm', url: 'https://www.rightmove.co.uk/student-accommodation/Edinburgh.html' },
+{ source: 'Rightmove', tag: 'src-rm', address: 'Bruntsfield Avenue, Bruntsfield, EH10', beds: 4, baths: 1, price: '£2,600 pcm', url: 'https://www.rightmove.co.uk/student-accommodation/Edinburgh.html' },
+{ source: 'Rightmove', tag: 'src-rm', address: 'Dalry Road, Dalry, EH11', beds: 2, baths: 1, price: '£1,400 pcm', url: 'https://www.rightmove.co.uk/student-accommodation/Edinburgh.html' },
+{ source: 'Rightmove', tag: 'src-rm', address: 'Logie Green Road, Canonmills, EH7', beds: 3, baths: 1, price: '£1,650 pcm', url: 'https://www.rightmove.co.uk/student-accommodation/Edinburgh.html' },
+{ source: 'Rightmove', tag: 'src-rm', address: 'Murano Place, off Leith Walk, EH7', beds: 3, baths: 2, price: '£2,275 pcm', url: 'https://www.rightmove.co.uk/student-accommodation/Edinburgh.html' },
+{ source: 'Rightmove', tag: 'src-rm', address: 'Buchanan Street, Leith, EH6', beds: 1, baths: null, price: '£895 pcm', url: 'https://www.rightmove.co.uk/student-accommodation/Edinburgh.html' },
+{ source: 'Rightmove', tag: 'src-rm', address: 'Montpelier Park, EH10', beds: 3, baths: 1, price: '£2,600 pcm', url: 'https://www.rightmove.co.uk/student-accommodation/Edinburgh.html' }
 ];
 
 // Durham, Bath, York, Exeter: real Rightmove student-accommodation listings, live-verified
 // 2026-07-15 (samples, not exhaustive — same treatment as Edinburgh above).
 const STATIC_LISTINGS_DUR = [
-  { source: 'Rightmove', tag: 'src-rm', address: 'Newton Drive, Durham, DH1', beds: 5, baths: 2, price: '£1,195 pcm', url: 'https://www.rightmove.co.uk/student-accommodation/Durham.html' },
-  { source: 'Rightmove', tag: 'src-rm', address: 'Lambton House, Durham, DH1', beds: 4, baths: 1, price: '£737 pcm', url: 'https://www.rightmove.co.uk/student-accommodation/Durham.html' },
-  { source: 'Rightmove', tag: 'src-rm', address: 'Durham Terrace, Framwellgate Moor, Durham, DH1 5EH', beds: 2, baths: 1, price: '£823 pcm', url: 'https://www.rightmove.co.uk/student-accommodation/Durham.html' },
-  { source: 'Rightmove', tag: 'src-rm', address: 'High Street South, Langley Moor, Durham', beds: 2, baths: 1, price: '£780 pcm', url: 'https://www.rightmove.co.uk/student-accommodation/Durham.html' },
-  { source: 'Rightmove', tag: 'src-rm', address: 'Avenue Street, High Shincliffe, Durham, DH1', beds: 2, baths: 1, price: '£1,200 pcm', url: 'https://www.rightmove.co.uk/student-accommodation/Durham.html' },
-  { source: 'Rightmove', tag: 'src-rm', address: 'Highgate, Durham, DH1 4GA', beds: 4, baths: 2, price: '£2,400 pcm', url: 'https://www.rightmove.co.uk/student-accommodation/Durham.html' },
-  { source: 'Rightmove', tag: 'src-rm', address: 'Metropolis House, Durham City, DH1', beds: 1, baths: 1, price: '£950 pcm', url: 'https://www.rightmove.co.uk/student-accommodation/Durham.html' },
-  { source: 'Rightmove', tag: 'src-rm', address: 'May Street, Durham, DH1', beds: 3, baths: 1, price: '£1,500 pcm', url: 'https://www.rightmove.co.uk/student-accommodation/Durham.html' }
+{ source: 'Rightmove', tag: 'src-rm', address: 'Newton Drive, Durham, DH1', beds: 5, baths: 2, price: '£1,195 pcm', url: 'https://www.rightmove.co.uk/student-accommodation/Durham.html' },
+{ source: 'Rightmove', tag: 'src-rm', address: 'Lambton House, Durham, DH1', beds: 4, baths: 1, price: '£737 pcm', url: 'https://www.rightmove.co.uk/student-accommodation/Durham.html' },
+{ source: 'Rightmove', tag: 'src-rm', address: 'Durham Terrace, Framwellgate Moor, Durham, DH1 5EH', beds: 2, baths: 1, price: '£823 pcm', url: 'https://www.rightmove.co.uk/student-accommodation/Durham.html' },
+{ source: 'Rightmove', tag: 'src-rm', address: 'High Street South, Langley Moor, Durham', beds: 2, baths: 1, price: '£780 pcm', url: 'https://www.rightmove.co.uk/student-accommodation/Durham.html' },
+{ source: 'Rightmove', tag: 'src-rm', address: 'Avenue Street, High Shincliffe, Durham, DH1', beds: 2, baths: 1, price: '£1,200 pcm', url: 'https://www.rightmove.co.uk/student-accommodation/Durham.html' },
+{ source: 'Rightmove', tag: 'src-rm', address: 'Highgate, Durham, DH1 4GA', beds: 4, baths: 2, price: '£2,400 pcm', url: 'https://www.rightmove.co.uk/student-accommodation/Durham.html' },
+{ source: 'Rightmove', tag: 'src-rm', address: 'Metropolis House, Durham City, DH1', beds: 1, baths: 1, price: '£950 pcm', url: 'https://www.rightmove.co.uk/student-accommodation/Durham.html' },
+{ source: 'Rightmove', tag: 'src-rm', address: 'May Street, Durham, DH1', beds: 3, baths: 1, price: '£1,500 pcm', url: 'https://www.rightmove.co.uk/student-accommodation/Durham.html' }
 ];
 
 const STATIC_LISTINGS_BATH = [
-  { source: 'Rightmove', tag: 'src-rm', address: 'Stuart Place, Twerton, Bath', beds: 4, baths: 1, price: '£2,950 pcm', url: 'https://www.rightmove.co.uk/student-accommodation/Bath.html' },
-  { source: 'Rightmove', tag: 'src-rm', address: 'St Kildas Road, Bath, BA2 3QL', beds: 5, baths: 1, price: '£3,900 pcm', url: 'https://www.rightmove.co.uk/student-accommodation/Bath.html' },
-  { source: 'Rightmove', tag: 'src-rm', address: 'Radway House, Wellsway, Bath', beds: 5, baths: 5, price: '£4,550 pcm', url: 'https://www.rightmove.co.uk/student-accommodation/Bath.html' },
-  { source: 'Rightmove', tag: 'src-rm', address: 'Wellsway, Bath', beds: 1, baths: 1, price: '£910 pcm', url: 'https://www.rightmove.co.uk/student-accommodation/Bath.html' },
-  { source: 'Rightmove', tag: 'src-rm', address: 'Noble House, Stothert Avenue, Bath, BA2', beds: 1, baths: 1, price: '£1,540 pcm', url: 'https://www.rightmove.co.uk/student-accommodation/Bath.html' },
-  { source: 'Rightmove', tag: 'src-rm', address: 'River Place, Twerton, Bath', beds: 1, baths: 1, price: '£1,149 pcm', url: 'https://www.rightmove.co.uk/student-accommodation/Bath.html' },
-  { source: 'Rightmove', tag: 'src-rm', address: 'St James\'s Parade, Bath', beds: 2, baths: 1, price: '£2,077 pcm', url: 'https://www.rightmove.co.uk/student-accommodation/Bath.html' }
+{ source: 'Rightmove', tag: 'src-rm', address: 'Stuart Place, Twerton, Bath', beds: 4, baths: 1, price: '£2,950 pcm', url: 'https://www.rightmove.co.uk/student-accommodation/Bath.html' },
+{ source: 'Rightmove', tag: 'src-rm', address: 'St Kildas Road, Bath, BA2 3QL', beds: 5, baths: 1, price: '£3,900 pcm', url: 'https://www.rightmove.co.uk/student-accommodation/Bath.html' },
+{ source: 'Rightmove', tag: 'src-rm', address: 'Radway House, Wellsway, Bath', beds: 5, baths: 5, price: '£4,550 pcm', url: 'https://www.rightmove.co.uk/student-accommodation/Bath.html' },
+{ source: 'Rightmove', tag: 'src-rm', address: 'Wellsway, Bath', beds: 1, baths: 1, price: '£910 pcm', url: 'https://www.rightmove.co.uk/student-accommodation/Bath.html' },
+{ source: 'Rightmove', tag: 'src-rm', address: 'Noble House, Stothert Avenue, Bath, BA2', beds: 1, baths: 1, price: '£1,540 pcm', url: 'https://www.rightmove.co.uk/student-accommodation/Bath.html' },
+{ source: 'Rightmove', tag: 'src-rm', address: 'River Place, Twerton, Bath', beds: 1, baths: 1, price: '£1,149 pcm', url: 'https://www.rightmove.co.uk/student-accommodation/Bath.html' },
+{ source: 'Rightmove', tag: 'src-rm', address: 'St James\'s Parade, Bath', beds: 2, baths: 1, price: '£2,077 pcm', url: 'https://www.rightmove.co.uk/student-accommodation/Bath.html' }
 ];
 
 const STATIC_LISTINGS_YORK = [
-  { source: 'Rightmove', tag: 'src-rm', address: 'Haxby Road, York, YO31', beds: 1, baths: null, price: '£802 pcm', url: 'https://www.rightmove.co.uk/student-accommodation/York.html' },
-  { source: 'Rightmove', tag: 'src-rm', address: 'Brownlow Street, The Groves, York', beds: 2, baths: 1, price: '£1,517 pcm', url: 'https://www.rightmove.co.uk/student-accommodation/York.html' },
-  { source: 'Rightmove', tag: 'src-rm', address: 'Leake Street, York, YO10', beds: 2, baths: 1, price: '£1,550 pcm', url: 'https://www.rightmove.co.uk/student-accommodation/York.html' },
-  { source: 'Rightmove', tag: 'src-rm', address: 'Fountayne House, Lawrence Square, York', beds: 3, baths: 2, price: '£2,626 pcm', url: 'https://www.rightmove.co.uk/student-accommodation/York.html' }
+{ source: 'Rightmove', tag: 'src-rm', address: 'Haxby Road, York, YO31', beds: 1, baths: null, price: '£802 pcm', url: 'https://www.rightmove.co.uk/student-accommodation/York.html' },
+{ source: 'Rightmove', tag: 'src-rm', address: 'Brownlow Street, The Groves, York', beds: 2, baths: 1, price: '£1,517 pcm', url: 'https://www.rightmove.co.uk/student-accommodation/York.html' },
+{ source: 'Rightmove', tag: 'src-rm', address: 'Leake Street, York, YO10', beds: 2, baths: 1, price: '£1,550 pcm', url: 'https://www.rightmove.co.uk/student-accommodation/York.html' },
+{ source: 'Rightmove', tag: 'src-rm', address: 'Fountayne House, Lawrence Square, York', beds: 3, baths: 2, price: '£2,626 pcm', url: 'https://www.rightmove.co.uk/student-accommodation/York.html' }
 ];
 
 const STATIC_LISTINGS_EXE = [
-  { source: 'Rightmove', tag: 'src-rm', address: 'Flat 25, Concord House, Exeter', beds: 1, baths: 1, price: '£1,084 pcm', url: 'https://www.rightmove.co.uk/student-accommodation/Exeter.html' },
-  { source: 'Rightmove', tag: 'src-rm', address: 'New North Road, Exeter', beds: 1, baths: 1, price: '£1,040 pcm', url: 'https://www.rightmove.co.uk/student-accommodation/Exeter.html' },
-  { source: 'Rightmove', tag: 'src-rm', address: 'Commercial Road, Exeter, EX2', beds: 2, baths: 1, price: '£1,900 pcm', url: 'https://www.rightmove.co.uk/student-accommodation/Exeter.html' },
-  { source: 'Rightmove', tag: 'src-rm', address: 'Prince Charles Road, Exeter', beds: 3, baths: 2, price: '£2,100 pcm', url: 'https://www.rightmove.co.uk/student-accommodation/Exeter.html' },
-  { source: 'Rightmove', tag: 'src-rm', address: 'Blackboy Road, Exeter', beds: 1, baths: 1, price: '£1,062 pcm', url: 'https://www.rightmove.co.uk/student-accommodation/Exeter.html' },
-  { source: 'Rightmove', tag: 'src-rm', address: 'Fore Street, Exeter, EX4', beds: 3, baths: 2, price: '£1,950 pcm', url: 'https://www.rightmove.co.uk/student-accommodation/Exeter.html' },
-  { source: 'Rightmove', tag: 'src-rm', address: 'Sandford Walk, Exeter, EX1', beds: 4, baths: 2, price: '£1,750 pcm', url: 'https://www.rightmove.co.uk/student-accommodation/Exeter.html' },
-  { source: 'Rightmove', tag: 'src-rm', address: 'Bonhay Road, Exeter, EX4', beds: 2, baths: 2, price: '£1,600 pcm', url: 'https://www.rightmove.co.uk/student-accommodation/Exeter.html' }
+{ source: 'Rightmove', tag: 'src-rm', address: 'Flat 25, Concord House, Exeter', beds: 1, baths: 1, price: '£1,084 pcm', url: 'https://www.rightmove.co.uk/student-accommodation/Exeter.html' },
+{ source: 'Rightmove', tag: 'src-rm', address: 'New North Road, Exeter', beds: 1, baths: 1, price: '£1,040 pcm', url: 'https://www.rightmove.co.uk/student-accommodation/Exeter.html' },
+{ source: 'Rightmove', tag: 'src-rm', address: 'Commercial Road, Exeter, EX2', beds: 2, baths: 1, price: '£1,900 pcm', url: 'https://www.rightmove.co.uk/student-accommodation/Exeter.html' },
+{ source: 'Rightmove', tag: 'src-rm', address: 'Prince Charles Road, Exeter', beds: 3, baths: 2, price: '£2,100 pcm', url: 'https://www.rightmove.co.uk/student-accommodation/Exeter.html' },
+{ source: 'Rightmove', tag: 'src-rm', address: 'Blackboy Road, Exeter', beds: 1, baths: 1, price: '£1,062 pcm', url: 'https://www.rightmove.co.uk/student-accommodation/Exeter.html' },
+{ source: 'Rightmove', tag: 'src-rm', address: 'Fore Street, Exeter, EX4', beds: 3, baths: 2, price: '£1,950 pcm', url: 'https://www.rightmove.co.uk/student-accommodation/Exeter.html' },
+{ source: 'Rightmove', tag: 'src-rm', address: 'Sandford Walk, Exeter, EX1', beds: 4, baths: 2, price: '£1,750 pcm', url: 'https://www.rightmove.co.uk/student-accommodation/Exeter.html' },
+{ source: 'Rightmove', tag: 'src-rm', address: 'Bonhay Road, Exeter, EX4', beds: 2, baths: 2, price: '£1,600 pcm', url: 'https://www.rightmove.co.uk/student-accommodation/Exeter.html' }
 ];
 
 function withPriceValue(list) {
-  return list.map(x => ({ ...x, priceValue: (function(){ const m = x.price.replace(/,/g,'').match(/£\s*(\d+(?:\.\d+)?)/); return m ? parseFloat(m[1]) : null; })() }));
+return list.map(x => ({ ...x, priceValue: (function(){ const m = x.price.replace(/,/g,'').match(/£\s*(\d+(?:\.\d+)?)/); return m ? parseFloat(m[1]) : null; })() }));
 }
 
 // Per-city config: which sources are live-checked (via this site's own /api/listings backend,
 // passing ?city=) vs manually curated, and what to label as "checked" in the sources strip.
 const CITY_CONFIG = {
-  'St Andrews': {
-    staticListings: withPriceValue(STATIC_LISTINGS_STA),
-    sourcesChecked: ['St Andrews Property Lets', 'Bradburne & Co', '55Rent', 'HMJ Properties', 'Lawson & Thompson', 'Studentpad', 'Rightmove', 'OnTheMarket', 'SpareRoom'],
-    useBackend: true
-  },
-  'Edinburgh': {
-    staticListings: withPriceValue(STATIC_LISTINGS_EDI),
-    sourcesChecked: ['Rightmove'],
-    useBackend: false
-  },
-  'Durham': {
-    staticListings: withPriceValue(STATIC_LISTINGS_DUR),
-    sourcesChecked: ['Frampton & Roebuck', 'Morgan Douglas', 'Rightmove'],
-    useBackend: true
-  },
-  'York': {
-    staticListings: withPriceValue(STATIC_LISTINGS_YORK),
-    sourcesChecked: ['2Let Agency', 'Rightmove'],
-    useBackend: true
-  },
-  'Bath': {
-    staticListings: withPriceValue(STATIC_LISTINGS_BATH),
-    sourcesChecked: ['Peter Moore Lets', 'Rightmove'],
-    useBackend: true
-  },
-  'Exeter': {
-    staticListings: withPriceValue(STATIC_LISTINGS_EXE),
-    sourcesChecked: ['Studentpad', 'Rightmove'],
-    useBackend: true
-  }
+'St Andrews': {
+staticListings: withPriceValue(STATIC_LISTINGS_STA),
+sourcesChecked: ['St Andrews Property Lets', 'Bradburne & Co', '55Rent', 'HMJ Properties', 'Lawson & Thompson', 'Studentpad', 'Rightmove', 'OnTheMarket', 'SpareRoom'],
+useBackend: true
+},
+'Edinburgh': {
+staticListings: withPriceValue(STATIC_LISTINGS_EDI),
+sourcesChecked: ['Rightmove'],
+useBackend: false
+},
+'Durham': {
+staticListings: withPriceValue(STATIC_LISTINGS_DUR),
+sourcesChecked: ['Frampton & Roebuck', 'Morgan Douglas', 'Rightmove'],
+useBackend: true
+},
+'York': {
+staticListings: withPriceValue(STATIC_LISTINGS_YORK),
+sourcesChecked: ['2Let Agency', 'Rightmove'],
+useBackend: true
+},
+'Bath': {
+staticListings: withPriceValue(STATIC_LISTINGS_BATH),
+sourcesChecked: ['Peter Moore Lets', 'Rightmove'],
+useBackend: true
+},
+'Exeter': {
+staticListings: withPriceValue(STATIC_LISTINGS_EXE),
+sourcesChecked: ['Studentpad', 'Rightmove'],
+useBackend: true
+}
 };
 
 function renderSourcesStrip() {
-  const el = document.getElementById('sourcesStrip');
-  const cfg = CITY_CONFIG[selectedCity];
-  const present = new Set(allListings.map(l => l.source));
-  el.innerHTML = cfg.sourcesChecked.map(name => {
-    const has = present.has(name);
-    return `<span class="source-pill${has ? ' has-results' : ''}"><span class="source-dot"></span>${name}</span>`;
-  }).join('');
+const el = document.getElementById('sourcesStrip');
+const cfg = CITY_CONFIG[selectedCity];
+const present = new Set(allListings.map(l => l.source));
+el.innerHTML = cfg.sourcesChecked.map(name => {
+const has = present.has(name);
+return `<span class="source-pill${has ? ' has-results' : ''}"><span class="source-dot"></span>${name}</span>`;
+}).join('');
 }
 
 let allListings = [];
@@ -779,109 +796,109 @@ let activeBeds = 'All';
 let activePriceMax = 0;
 
 function renderFilters() {
-  const sources = ['All', ...new Set(allListings.map(l => l.source))];
-  const el = document.getElementById('filters');
-  el.innerHTML = '';
-  sources.forEach(s => {
-    const btn = document.createElement('button');
-    btn.className = 'filter-btn' + (s === activeFilter ? ' active' : '');
-    btn.textContent = s;
-    btn.onclick = () => { activeFilter = s; renderFilters(); renderList(); };
-    el.appendChild(btn);
-  });
+const sources = ['All', ...new Set(allListings.map(l => l.source))];
+const el = document.getElementById('filters');
+el.innerHTML = '';
+sources.forEach(s => {
+const btn = document.createElement('button');
+btn.className = 'filter-btn' + (s === activeFilter ? ' active' : '');
+btn.textContent = s;
+btn.onclick = () => { activeFilter = s; renderFilters(); renderList(); };
+el.appendChild(btn);
+});
 }
 
 function onSortChange() {
-  activeSort = document.getElementById('sortSelect').value;
-  renderList();
+activeSort = document.getElementById('sortSelect').value;
+renderList();
 }
 
 function onBedsChange() {
-  activeBeds = document.getElementById('bedsSelect').value;
-  renderList();
+activeBeds = document.getElementById('bedsSelect').value;
+renderList();
 }
 
 function onPriceMaxChange() {
-  activePriceMax = parseInt(document.getElementById('priceMaxSelect').value, 10);
-  renderList();
+activePriceMax = parseInt(document.getElementById('priceMaxSelect').value, 10);
+renderList();
 }
 
 function getSortedFiltered() {
-  let items = activeFilter === 'All' ? [...allListings] : allListings.filter(l => l.source === activeFilter);
-  if (activeBeds !== 'All') {
-    const n = parseInt(activeBeds, 10);
-    items = items.filter(l => l.beds != null && (n === 5 ? l.beds >= 5 : l.beds === n));
-  }
-  if (activePriceMax > 0) {
-    items = items.filter(l => l.priceValue != null && l.priceValue <= activePriceMax);
-  }
-  if (activeSort === 'price-asc') {
-    items.sort((a, b) => (a.priceValue ?? Infinity) - (b.priceValue ?? Infinity));
-  } else if (activeSort === 'price-desc') {
-    items.sort((a, b) => (b.priceValue ?? -Infinity) - (a.priceValue ?? -Infinity));
-  } else if (activeSort === 'source') {
-    items.sort((a, b) => a.source.localeCompare(b.source));
-  }
-  return items;
+let items = activeFilter === 'All' ? [...allListings] : allListings.filter(l => l.source === activeFilter);
+if (activeBeds !== 'All') {
+const n = parseInt(activeBeds, 10);
+items = items.filter(l => l.beds != null && (n === 5 ? l.beds >= 5 : l.beds === n));
+}
+if (activePriceMax > 0) {
+items = items.filter(l => l.priceValue != null && l.priceValue <= activePriceMax);
+}
+if (activeSort === 'price-asc') {
+items.sort((a, b) => (a.priceValue ?? Infinity) - (b.priceValue ?? Infinity));
+} else if (activeSort === 'price-desc') {
+items.sort((a, b) => (b.priceValue ?? -Infinity) - (a.priceValue ?? -Infinity));
+} else if (activeSort === 'source') {
+items.sort((a, b) => a.source.localeCompare(b.source));
+}
+return items;
 }
 
 function bedBathLabel(item) {
-  const parts = [];
-  if (item.beds != null) parts.push(item.beds === 0 ? 'Studio' : (item.beds + (item.beds === 1 ? ' bed' : ' beds')));
-  if (item.baths != null) parts.push(item.baths + (item.baths === 1 ? ' bath' : ' baths'));
-  return parts.join(' · ');
+const parts = [];
+if (item.beds != null) parts.push(item.beds === 0 ? 'Studio' : (item.beds + (item.beds === 1 ? ' bed' : ' beds')));
+if (item.baths != null) parts.push(item.baths + (item.baths === 1 ? ' bath' : ' baths'));
+return parts.join(' · ');
 }
 
 function renderList() {
-  const el = document.getElementById('list');
-  const items = getSortedFiltered();
-  if (!items.length) { el.innerHTML = '<div class="empty">Nothing matches these filters right now.</div>'; return; }
-  el.innerHTML = '';
-  items.forEach(item => {
-    const meta = bedBathLabel(item);
-    const card = document.createElement('div');
-    card.className = 'card';
-    card.innerHTML = `
-      <div class="card-main">
-        <div class="card-addr"><span class="src ${item.tag}">${item.source}</span>${item.address}</div>
-        ${meta ? `<div class="card-meta">${meta}</div>` : ''}
-      </div>
-      <div class="price">${item.price || ''}</div>
-      ${item.url ? `<a class="view-link" href="${item.url}" target="_blank">View</a>` : (item.contact ? `<span class="card-contact">${item.contact}</span>` : '')}
-    `;
-    el.appendChild(card);
-  });
+const el = document.getElementById('list');
+const items = getSortedFiltered();
+if (!items.length) { el.innerHTML = '<div class="empty">Nothing matches these filters right now.</div>'; return; }
+el.innerHTML = '';
+items.forEach(item => {
+const meta = bedBathLabel(item);
+const card = document.createElement('div');
+card.className = 'card';
+card.innerHTML = `
+<div class="card-main">
+<div class="card-addr"><span class="src ${item.tag}">${item.source}</span>${item.address}</div>
+${meta ? `<div class="card-meta">${meta}</div>` : ''}
+</div>
+<div class="price">${item.price || ''}</div>
+${item.url ? `<a class="view-link" href="${item.url}" target="_blank">View</a>` : (item.contact ? `<span class="card-contact">${item.contact}</span>` : '')}
+`;
+el.appendChild(card);
+});
 }
 
 async function runCheck() {
-  const btn = document.getElementById('refreshBtn');
-  btn.disabled = true; btn.textContent = 'Checking…';
-  document.getElementById('errNote').textContent = '';
-  const cfg = CITY_CONFIG[selectedCity];
+const btn = document.getElementById('refreshBtn');
+btn.disabled = true; btn.textContent = 'Checking…';
+document.getElementById('errNote').textContent = '';
+const cfg = CITY_CONFIG[selectedCity];
 
-  try {
-    const res = await fetch('/api/listings?city=' + encodeURIComponent(selectedCity));
-    const data = await res.json();
-    allListings = [...cfg.staticListings, ...(data.listings || [])];
-    document.getElementById('bigNum').textContent = allListings.length;
-    document.getElementById('updatedAt').textContent = cfg.useBackend
-      ? 'Updated ' + new Date(data.checkedAt).toLocaleString()
-      : 'Curated snapshot, plus student-added listings';
-    if (data.errors && data.errors.length) {
-      const errNote = document.getElementById('errNote');
-      errNote.textContent = 'Some sources failed: ' + data.errors.map(e => e.source).join(', ');
-      errNote.title = data.errors.map(e => e.source + ': ' + e.error).join('\n');
-      console.error('Roomrun source errors:', data.errors);
-    }
-    renderFilters();
-    renderList();
-    renderSourcesStrip();
-  } catch (e) {
-    allListings = [...cfg.staticListings];
-    document.getElementById('bigNum').textContent = allListings.length;
-    document.getElementById('list').innerHTML = '<div class="empty">Could not reach the server. Try refreshing.</div>';
-  }
-  btn.disabled = false; btn.textContent = 'Refresh';
+try {
+const res = await fetch('/api/listings?city=' + encodeURIComponent(selectedCity));
+const data = await res.json();
+allListings = [...cfg.staticListings, ...(data.listings || [])];
+document.getElementById('bigNum').textContent = allListings.length;
+document.getElementById('updatedAt').textContent = cfg.useBackend
+? 'Updated ' + new Date(data.checkedAt).toLocaleString()
+: 'Curated snapshot, plus student-added listings';
+if (data.errors && data.errors.length) {
+const errNote = document.getElementById('errNote');
+errNote.textContent = 'Some sources failed: ' + data.errors.map(e => e.source).join(', ');
+errNote.title = data.errors.map(e => e.source + ': ' + e.error).join('\n');
+console.error('Roomrun source errors:', data.errors);
+}
+renderFilters();
+renderList();
+renderSourcesStrip();
+} catch (e) {
+allListings = [...cfg.staticListings];
+document.getElementById('bigNum').textContent = allListings.length;
+document.getElementById('list').innerHTML = '<div class="empty">Could not reach the server. Try refreshing.</div>';
+}
+btn.disabled = false; btn.textContent = 'Refresh';
 }
 </script>
 </body>
