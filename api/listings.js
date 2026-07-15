@@ -14,7 +14,7 @@ const HTT_OPTS = {
 
 async function fetchText(url) {
   const res = await fetch(url, {
-    headers: { 'User-Agent': 'Mozilla/5.0 (compatible; StAndrewsRoomWatch/1.0)' }
+    headers: { 'User-Agent': 'Mozilla/5.0 (compatible; Roomrun/1.0)' }
   });
   if (!res.ok) throw new Error('HTTP ' + res.status + ' for ' + url);
   const html = await res.text();
