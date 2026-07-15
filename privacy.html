@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Privacy Policy — Roomrun</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --navy-900: #0B1730;
+  --accent: #4C7EFF;
+  --accent-2: #7FA8FF;
+  --ink: #0B1730;
+  --muted: #5B647A;
+  --line: #E4E8F2;
+  --bg: #F4F6FC;
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  background: var(--bg);
+  color: var(--ink);
+  line-height: 1.6;
+}
+.wrap { max-width: 680px; margin: 0 auto; padding: 56px 24px 80px; }
+.brand-row { display: flex; align-items: center; gap: 10px; margin-bottom: 40px; }
+.brand-mark {
+  width: 30px; height: 30px; border-radius: 9px;
+  background: linear-gradient(135deg, var(--accent), var(--accent-2));
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 700; font-size: 14px; color: #fff;
+  font-family: 'Space Grotesk', sans-serif;
+}
+.brand { font-size: 18px; font-weight: 700; font-family: 'Space Grotesk', sans-serif; color: var(--navy-900); }
+h1 { font-family: 'Space Grotesk', sans-serif; font-size: 28px; margin: 0 0 8px; letter-spacing: -0.3px; }
+.updated { font-size: 13px; color: var(--muted); margin-bottom: 36px; }
+h2 { font-family: 'Space Grotesk', sans-serif; font-size: 17px; margin: 32px 0 10px; }
+p, li { font-size: 14.5px; color: #333c4d; }
+ul { padding-left: 20px; }
+a { color: var(--accent); }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="brand-row">
+    <div class="brand-mark">R</div>
+    <div class="brand">Roomrun</div>
+  </div>
+
+  <h1>Privacy Policy</h1>
+  <div class="updated">Last updated 15 July 2026</div>
+
+  <p>Roomrun helps students find available rentals from local letting agents in one place. This page explains what information the app collects and how it's used.</p>
+
+  <h2>What we collect</h2>
+  <ul>
+    <li><strong>Push notification subscriptions</strong> — if you turn on notifications, your browser generates a subscription token so we can send you alerts. We don't collect your name, email, or any personal identity alongside this unless you separately choose to save your details.</li>
+    <li><strong>Name and email (optional)</strong> — if you use the "Save your details" step under Get Notified, this is stored only on your own device (browser local storage), not on our servers, and is used only to pre-fill signup forms on third-party sites you choose to visit.</li>
+    <li><strong>Self-added listings</strong> — if you use "Add a House" to submit a listing, the address, price, bedroom count, and contact info you enter is stored so it can be shown to other users, tagged "Added by students."</li>
+  </ul>
+
+  <h2>What we don't do</h2>
+  <ul>
+    <li>We don't sell or share your data with advertisers or third parties.</li>
+    <li>We don't track you across other websites.</li>
+    <li>We don't require an account or login to use the app.</li>
+  </ul>
+
+  <h2>Third-party sites</h2>
+  <p>Roomrun links out to letting agents' own websites (Rightmove, SpareRoom, OnTheMarket, and local agencies) for full listing details and applications. Once you leave Roomrun, that site's own privacy policy applies — we have no visibility into or control over what happens there.</p>
+
+  <h2>Data storage</h2>
+  <p>Listing data and push subscriptions are stored using Upstash Redis, hosted via Vercel's infrastructure. Self-added listings are retained to keep the list useful for future visitors; the most recent 200 per city are kept.</p>
+
+  <h2>Contact</h2>
+  <p>Questions about this policy or your data can be sent to <a href="mailto:borismetaliaj@gmail.com">borismetaliaj@gmail.com</a>.</p>
+</div>
+</body>
+</html>
