@@ -1,7 +1,34 @@
-// Vercel Serverless Function — GET /api/listings
+// Vercel Serverless Function — GET /api/listings?city=St+Andrews|Edinburgh|Durham|Bath|York|Exeter
 // Fetches each source site server-side (avoids browser CORS restrictions),
 // converts HTML to readable text, and parses out currently-available properties.
 const { convert } = require('html-to-text');
+const { Redis } = require('@upstash/redis');
+const redis = Redis.fromEnv();
+
+// --- Student-added listings: read back whatever's been submitted via /api/submit-listing
+// for this city, newest first. Never throws — if Redis is unreachable we just show 0 of these
+// rather than breaking the whole page. ---
+async function getCommunityListings(city) {
+  try {
+    const raw = await redis.lrange('community:' + city, 0, 199);
+    return raw.map(r => {
+      const entry = typeof r === 'string' ? JSON.parse(r) : r;
+      return {
+        source: 'Added by students',
+        tag: 'src-community',
+        address: entry.address,
+        beds: entry.beds ?? null,
+        baths: null,
+        price: entry.price || '',
+        priceValue: parsePrice(entry.price),
+        url: null,
+        contact: entry.contact || ''
+      };
+    });
+  } catch (e) {
+    return [];
+  }
+}
 
 const HTT_OPTS = {
   wordwrap: false,
@@ -102,8 +129,8 @@ function parse55Rent(text) {
   return results;
 }
 
-// --- Lawson & Thompson + Studentpad: JS-rendered pages, need a headless browser ---
-// Isolated behind its own try/catch so a Chromium failure never breaks the other 3 sources.
+// --- Lawson & Thompson + Studentpad (any town): JS-rendered pages, need a headless browser ---
+// Isolated behind its own try/catch so a Chromium failure never breaks the other sources.
 async function fetchRenderedText(url, waitMs) {
   const chromium = require('@sparticuz/chromium');
   const puppeteer = require('puppeteer-core');
@@ -114,7 +141,7 @@ async function fetchRenderedText(url, waitMs) {
   });
   try {
     const page = await browser.newPage();
-    await page.setUserAgent('Mozilla/5.0 (compatible; StAndrewsRoomWatch/1.0)');
+    await page.setUserAgent('Mozilla/5.0 (compatible; Roomrun/1.0)');
     await page.goto(url, { waitUntil: 'networkidle2', timeout: 20000 });
     if (waitMs) await new Promise(r => setTimeout(r, waitMs));
     const html = await page.content();
@@ -185,12 +212,71 @@ function parseHMJ(text) {
   return results;
 }
 
-module.exports = async (req, res) => {
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  const listings = [];
-  const errors = [];
+// --- Frampton & Roebuck (Durham): each listing renders as one link whose text reads
+// "ADDRESS PRICE PPPW BEDS BATHS Bills Included: STATUS More details" — best-effort, exact
+// html-to-text rendering of this WordPress theme wasn't testable pre-deploy. Their T&Cs are a
+// standard copyright notice with no data-mining/scraping restriction, unlike Morgan Douglas.
+function parseFramptonRoebuck(text) {
+  const results = [];
+  const re = /([A-Za-z0-9.'\- ]+?)\s+(\d+)\s*PPPW\s+(\d+)\s+(\d+)\s+Bills Included:\s*\S*\s*More details\s*\((https:\/\/www\.framptonandroebuck\.co\.uk\/students\/[^\)]+)\)/g;
+  let m;
+  while ((m = re.exec(text)) !== null) {
+    results.push({
+      address: m[1].trim(),
+      price: '£' + m[2] + ' pppw',
+      beds: parseInt(m[3], 10),
+      baths: parseInt(m[4], 10),
+      url: m[5]
+    });
+  }
+  return results;
+}
 
-  const sources = [
+// --- 2Let Agency (York): landmark on a "BEDS BATHS (url)" line, followed by an address line and
+// a price line. Best-effort — flag to Boris if entries look off.
+function parse2Let(text) {
+  const lines = text.split('\n').map(l => l.trim()).filter(Boolean);
+  const results = [];
+  for (let i = 0; i < lines.length - 2; i++) {
+    const bbMatch = lines[i].match(/^(\d+)\s+(\d+)\s*\(https:\/\/www\.2letagency\.co\.uk\/property\/\d+\/\)$/);
+    if (!bbMatch) continue;
+    const addrMatch = lines[i + 1].match(/^(.+?)\s*\((https:\/\/www\.2letagency\.co\.uk\/property\/\d+\/)\)$/);
+    if (!addrMatch) continue;
+    const priceMatch = lines[i + 2].match(/£[\d,.]+\s*(PPPW|PCM)/i);
+    if (!priceMatch) continue;
+    results.push({
+      beds: parseInt(bbMatch[1], 10),
+      baths: parseInt(bbMatch[2], 10),
+      address: addrMatch[1].trim(),
+      price: lines[i + 2].trim(),
+      url: addrMatch[2]
+    });
+  }
+  return results;
+}
+
+// --- Peter Moore Lets (Bath): modeled on their "N Bedroom [Type]" card + VIEW PROPERTY link
+// pattern. Their site currently shows nothing available for 2026/27, so this parser is UNTESTED
+// against a real live listing — flag to Boris the first time this returns something.
+function parsePeterMoore(text) {
+  const re = /(\d+)\s*Bedroom\s*(House|Flat|Maisonette|Apartment)[\s\S]*?VIEW\s*PROPER?TY\s*\((https:\/\/www\.studentaccommodationbath\.com\/[^\)]+)\)/gi;
+  const results = [];
+  let m;
+  while ((m = re.exec(text)) !== null) {
+    results.push({
+      address: m[1] + ' Bedroom ' + m[2],
+      beds: parseInt(m[1], 10),
+      url: m[3]
+    });
+  }
+  return results;
+}
+
+// Per-city live sources. Rightmove/OnTheMarket/Zoopla/SpareRoom and Morgan Douglas (Durham,
+// explicit "no data mining" clause) are deliberately excluded — those stay manually-curated
+// static snapshots in index.html, never live-scraped.
+const CITY_SOURCES = {
+  'St Andrews': [
     {
       name: 'St Andrews Property Lets', url: 'https://standrewspropertylets.uk/',
       run: async () => parseSAPL(await fetchText('https://standrewspropertylets.uk/'))
@@ -227,15 +313,60 @@ module.exports = async (req, res) => {
         return [{ source: 'Studentpad', tag: 'src-sp', address: count + ' rooms listed on the official University portal', beds: null, baths: null, price: '', priceValue: null, url: 'https://www.standrewsstudentpad.co.uk/Accommodation' }];
       }
     }
-  ];
+  ],
+  'Durham': [
+    {
+      name: 'Frampton & Roebuck', url: 'https://www.framptonandroebuck.co.uk/students/',
+      run: async () => parseFramptonRoebuck(await fetchText('https://www.framptonandroebuck.co.uk/students/'))
+        .map(i => ({ source: 'Frampton & Roebuck', tag: 'src-fr', address: titleCase(i.address), beds: i.beds, baths: i.baths, price: i.price, priceValue: parsePrice(i.price), url: i.url }))
+    }
+  ],
+  'York': [
+    {
+      name: '2Let Agency', url: 'https://www.2letagency.co.uk/',
+      run: async () => parse2Let(await fetchText('https://www.2letagency.co.uk/'))
+        .map(i => ({ source: '2Let Agency', tag: 'src-2let', address: i.address, beds: i.beds, baths: i.baths, price: i.price, priceValue: parsePrice(i.price), url: i.url }))
+    }
+  ],
+  'Bath': [
+    {
+      name: 'Peter Moore Lets', url: 'https://www.studentaccommodationbath.com/latest-availability',
+      run: async () => parsePeterMoore(await fetchText('https://www.studentaccommodationbath.com/latest-availability'))
+        .map(i => ({ source: 'Peter Moore Lets', tag: 'src-pml', address: i.address, beds: i.beds, baths: null, price: '', priceValue: null, url: i.url }))
+    }
+  ],
+  'Exeter': [
+    {
+      name: 'Studentpad (room count)', url: 'https://www.exeterstudentpad.co.uk/Accommodation',
+      run: async () => {
+        const count = parseStudentpadCount(await fetchRenderedText('https://www.exeterstudentpad.co.uk/Accommodation', 2000));
+        if (!count) return [];
+        return [{ source: 'Studentpad', tag: 'src-sp', address: count + ' rooms listed on the official University portal', beds: null, baths: null, price: '', priceValue: null, url: 'https://www.exeterstudentpad.co.uk/Accommodation' }];
+      }
+    }
+  ]
+};
+
+module.exports = async (req, res) => {
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  const city = (req.query && req.query.city) || 'St Andrews';
+  const sources = CITY_SOURCES[city] || [];
+  const listings = [];
+  const errors = [];
 
   await Promise.all(sources.map(async (src) => {
     try {
       listings.push(...(await src.run()));
     } catch (e) {
-      errors.push({ source: src.name, error: String(e.message || e) });
+      // Include a snippet of the stack, not just e.message, since JS-rendered sources
+      // (Lawson & Thompson, Studentpad) fail inside puppeteer/chromium and a bare message
+      // like "Timed out" or "Protocol error" isn't enough to diagnose remotely.
+      const detail = e && e.stack ? String(e.stack).split('\n').slice(0, 3).join(' | ') : String((e && e.message) || e);
+      errors.push({ source: src.name, error: detail });
     }
   }));
+
+  listings.push(...(await getCommunityListings(city)));
 
   res.status(200).json({
     listings,
