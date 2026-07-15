@@ -173,6 +173,11 @@
   .src-otm  { background: #FDEEE0; color: #B0521A; }
   .src-hmj  { background: #E6F4FD; color: #1A6FA0; }
   .src-spr  { background: #FFE9F0; color: #B01A5C; }
+  .src-fr   { background: #EAF7E9; color: #237A3B; }
+  .src-2let { background: #FFF4E0; color: #A65E00; }
+  .src-pml  { background: #F3E9FF; color: #6C2BB0; }
+  .src-community { background: #FFF0F5; color: #B0195A; }
+  .card-contact { font-size: 11.5px; color: var(--muted); white-space: nowrap; }
   .price { font-family: 'Space Grotesk', sans-serif; font-weight: 700; font-size: 15px; color: var(--navy-900); white-space: nowrap; }
   .view-link {
     font-size: 12px; font-weight: 700; color: #fff; background: linear-gradient(135deg, var(--navy-900), var(--navy-700));
@@ -272,7 +277,7 @@
     </div>
     <div class="nav-links">
       <div class="nav-link" onclick="showAlerts()">🔔 Get Notified</div>
-      <div class="nav-link" onclick="showReport()">👀 Spotted Something?</div>
+      <div class="nav-link" onclick="showAddHouse()">🏠 Add a House</div>
       <div class="city-switch" onclick="showLanding()">📍 <span id="currentCityLabel">St Andrews</span> — change</div>
     </div>
   </header>
@@ -365,9 +370,9 @@
   </header>
   <div class="wrap">
     <div class="panel-block">
-      <div class="panel-eyebrow">Community tip-off</div>
-      <div class="panel-title">Spotted a listing on Facebook (or anywhere else)?</div>
-      <p class="panel-intro">Facebook groups like "Get a Room, St Andrews" can't be monitored automatically — Meta shut down third-party API access to Groups in 2024, and their Terms explicitly ban scraping, with real enforcement (account bans, lawsuits). So this runs on people, not code: if you see something good, drop it here and it'll get added to the listings.</p>
+      <div class="panel-eyebrow">Add a house</div>
+      <div class="panel-title">Got a house to add?</div>
+      <p class="panel-intro">If you know of a place that's free and not showing up here, add it below — it'll appear on the list for everyone else looking too, tagged "Added by students" so people know it's a student find, not an agency listing.</p>
       <div class="field-group">
         <label class="field-label">Address / description</label>
         <input class="field-input" id="reportAddr" placeholder="e.g. 2-bed flat, Market Street">
@@ -377,15 +382,15 @@
         <input class="field-input" id="reportPrice" placeholder="e.g. £1,600 pcm">
       </div>
       <div class="field-group">
-        <label class="field-label">Link or post details</label>
-        <input class="field-input" id="reportLink" placeholder="Facebook post link, or who to contact">
+        <label class="field-label">Bedrooms (if known)</label>
+        <input class="field-input" id="reportBeds" placeholder="e.g. 3" inputmode="numeric">
       </div>
       <div class="field-group">
-        <label class="field-label">Where you saw it</label>
-        <input class="field-input" id="reportSource" placeholder="e.g. Get a Room, St Andrews (Facebook group)">
+        <label class="field-label">Contact (optional)</label>
+        <input class="field-input" id="reportLink" placeholder="e.g. your email, or a link where people can find out more">
       </div>
-      <button class="save-btn" onclick="submitReport()">Send</button>
-      <span class="save-note" id="reportNote" style="display:none;">Opening your email…</span>
+      <button class="save-btn" onclick="submitReport()">Add to the list</button>
+      <span class="save-note" id="reportNote" style="display:none;"></span>
     </div>
   </div>
 </div>
@@ -450,8 +455,11 @@ async function enableNotifications() {
 const CITIES = [
   { name: 'St Andrews', available: true },
   { name: 'Edinburgh', available: true },
-  { name: 'Glasgow', available: false },
-  { name: 'Durham', available: false }
+  { name: 'Durham', available: true },
+  { name: 'Bath', available: true },
+  { name: 'York', available: true },
+  { name: 'Exeter', available: true },
+  { name: 'Glasgow', available: false }
 ];
 let selectedCity = 'St Andrews';
 
@@ -594,26 +602,44 @@ function loadMyDetails() {
   document.getElementById('alertEmail').value = localStorage.getItem('rw_email') || '';
 }
 
-// --- Spotted Something: Facebook groups can't be scraped (Meta shut off the Groups API in 2024,
-// ToS bans automated collection) — so this is a human-in-the-loop submit-a-tip form instead ---
-function showReport() {
+// --- Add a House: students self-submit a listing straight into the app, no moderation queue —
+// it's tagged "Added by students" so it's clearly distinguished from agency-checked sources. ---
+function showAddHouse() {
   hideAllViews();
   document.getElementById('reportView').style.display = 'block';
   playFade('reportView');
 }
 
-function submitReport() {
+async function submitReport() {
   const addr = document.getElementById('reportAddr').value.trim();
   const price = document.getElementById('reportPrice').value.trim();
-  const link = document.getElementById('reportLink').value.trim();
-  const source = document.getElementById('reportSource').value.trim();
-  const subject = encodeURIComponent('Roomrun — listing spotted');
-  const body = encodeURIComponent(
-    `Address/description: ${addr}\nPrice: ${price}\nLink / contact: ${link}\nSpotted on: ${source}`
-  );
+  const beds = document.getElementById('reportBeds').value.trim();
+  const contact = document.getElementById('reportLink').value.trim();
   const note = document.getElementById('reportNote');
-  note.style.display = 'inline';
-  window.open(`mailto:borismetaliaj@gmail.com?subject=${subject}&body=${body}`, '_blank');
+
+  if (!addr) {
+    note.textContent = 'Add an address or description first.';
+    note.style.display = 'inline';
+    return;
+  }
+
+  try {
+    const res = await fetch('/api/submit-listing', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ city: selectedCity, address: addr, price, beds, contact })
+    });
+    if (!res.ok) throw new Error('request failed');
+    note.textContent = 'Added ✓ — it\'s on the list now.';
+    note.style.display = 'inline';
+    document.getElementById('reportAddr').value = '';
+    document.getElementById('reportPrice').value = '';
+    document.getElementById('reportBeds').value = '';
+    document.getElementById('reportLink').value = '';
+  } catch (e) {
+    note.textContent = 'Something went wrong — try again.';
+    note.style.display = 'inline';
+  }
 }
 
 // Rightmove, OnTheMarket and SpareRoom all explicitly prohibit scraping in their Terms of Use,
@@ -656,12 +682,53 @@ const STATIC_LISTINGS_EDI = [
   { source: 'Rightmove', tag: 'src-rm', address: 'Montpelier Park, EH10', beds: 3, baths: 1, price: '£2,600 pcm', url: 'https://www.rightmove.co.uk/student-accommodation/Edinburgh.html' }
 ];
 
+// Durham, Bath, York, Exeter: real Rightmove student-accommodation listings, live-verified
+// 2026-07-15 (samples, not exhaustive — same treatment as Edinburgh above).
+const STATIC_LISTINGS_DUR = [
+  { source: 'Rightmove', tag: 'src-rm', address: 'Newton Drive, Durham, DH1', beds: 5, baths: 2, price: '£1,195 pcm', url: 'https://www.rightmove.co.uk/student-accommodation/Durham.html' },
+  { source: 'Rightmove', tag: 'src-rm', address: 'Lambton House, Durham, DH1', beds: 4, baths: 1, price: '£737 pcm', url: 'https://www.rightmove.co.uk/student-accommodation/Durham.html' },
+  { source: 'Rightmove', tag: 'src-rm', address: 'Durham Terrace, Framwellgate Moor, Durham, DH1 5EH', beds: 2, baths: 1, price: '£823 pcm', url: 'https://www.rightmove.co.uk/student-accommodation/Durham.html' },
+  { source: 'Rightmove', tag: 'src-rm', address: 'High Street South, Langley Moor, Durham', beds: 2, baths: 1, price: '£780 pcm', url: 'https://www.rightmove.co.uk/student-accommodation/Durham.html' },
+  { source: 'Rightmove', tag: 'src-rm', address: 'Avenue Street, High Shincliffe, Durham, DH1', beds: 2, baths: 1, price: '£1,200 pcm', url: 'https://www.rightmove.co.uk/student-accommodation/Durham.html' },
+  { source: 'Rightmove', tag: 'src-rm', address: 'Highgate, Durham, DH1 4GA', beds: 4, baths: 2, price: '£2,400 pcm', url: 'https://www.rightmove.co.uk/student-accommodation/Durham.html' },
+  { source: 'Rightmove', tag: 'src-rm', address: 'Metropolis House, Durham City, DH1', beds: 1, baths: 1, price: '£950 pcm', url: 'https://www.rightmove.co.uk/student-accommodation/Durham.html' },
+  { source: 'Rightmove', tag: 'src-rm', address: 'May Street, Durham, DH1', beds: 3, baths: 1, price: '£1,500 pcm', url: 'https://www.rightmove.co.uk/student-accommodation/Durham.html' }
+];
+
+const STATIC_LISTINGS_BATH = [
+  { source: 'Rightmove', tag: 'src-rm', address: 'Stuart Place, Twerton, Bath', beds: 4, baths: 1, price: '£2,950 pcm', url: 'https://www.rightmove.co.uk/student-accommodation/Bath.html' },
+  { source: 'Rightmove', tag: 'src-rm', address: 'St Kildas Road, Bath, BA2 3QL', beds: 5, baths: 1, price: '£3,900 pcm', url: 'https://www.rightmove.co.uk/student-accommodation/Bath.html' },
+  { source: 'Rightmove', tag: 'src-rm', address: 'Radway House, Wellsway, Bath', beds: 5, baths: 5, price: '£4,550 pcm', url: 'https://www.rightmove.co.uk/student-accommodation/Bath.html' },
+  { source: 'Rightmove', tag: 'src-rm', address: 'Wellsway, Bath', beds: 1, baths: 1, price: '£910 pcm', url: 'https://www.rightmove.co.uk/student-accommodation/Bath.html' },
+  { source: 'Rightmove', tag: 'src-rm', address: 'Noble House, Stothert Avenue, Bath, BA2', beds: 1, baths: 1, price: '£1,540 pcm', url: 'https://www.rightmove.co.uk/student-accommodation/Bath.html' },
+  { source: 'Rightmove', tag: 'src-rm', address: 'River Place, Twerton, Bath', beds: 1, baths: 1, price: '£1,149 pcm', url: 'https://www.rightmove.co.uk/student-accommodation/Bath.html' },
+  { source: 'Rightmove', tag: 'src-rm', address: 'St James\'s Parade, Bath', beds: 2, baths: 1, price: '£2,077 pcm', url: 'https://www.rightmove.co.uk/student-accommodation/Bath.html' }
+];
+
+const STATIC_LISTINGS_YORK = [
+  { source: 'Rightmove', tag: 'src-rm', address: 'Haxby Road, York, YO31', beds: 1, baths: null, price: '£802 pcm', url: 'https://www.rightmove.co.uk/student-accommodation/York.html' },
+  { source: 'Rightmove', tag: 'src-rm', address: 'Brownlow Street, The Groves, York', beds: 2, baths: 1, price: '£1,517 pcm', url: 'https://www.rightmove.co.uk/student-accommodation/York.html' },
+  { source: 'Rightmove', tag: 'src-rm', address: 'Leake Street, York, YO10', beds: 2, baths: 1, price: '£1,550 pcm', url: 'https://www.rightmove.co.uk/student-accommodation/York.html' },
+  { source: 'Rightmove', tag: 'src-rm', address: 'Fountayne House, Lawrence Square, York', beds: 3, baths: 2, price: '£2,626 pcm', url: 'https://www.rightmove.co.uk/student-accommodation/York.html' }
+];
+
+const STATIC_LISTINGS_EXE = [
+  { source: 'Rightmove', tag: 'src-rm', address: 'Flat 25, Concord House, Exeter', beds: 1, baths: 1, price: '£1,084 pcm', url: 'https://www.rightmove.co.uk/student-accommodation/Exeter.html' },
+  { source: 'Rightmove', tag: 'src-rm', address: 'New North Road, Exeter', beds: 1, baths: 1, price: '£1,040 pcm', url: 'https://www.rightmove.co.uk/student-accommodation/Exeter.html' },
+  { source: 'Rightmove', tag: 'src-rm', address: 'Commercial Road, Exeter, EX2', beds: 2, baths: 1, price: '£1,900 pcm', url: 'https://www.rightmove.co.uk/student-accommodation/Exeter.html' },
+  { source: 'Rightmove', tag: 'src-rm', address: 'Prince Charles Road, Exeter', beds: 3, baths: 2, price: '£2,100 pcm', url: 'https://www.rightmove.co.uk/student-accommodation/Exeter.html' },
+  { source: 'Rightmove', tag: 'src-rm', address: 'Blackboy Road, Exeter', beds: 1, baths: 1, price: '£1,062 pcm', url: 'https://www.rightmove.co.uk/student-accommodation/Exeter.html' },
+  { source: 'Rightmove', tag: 'src-rm', address: 'Fore Street, Exeter, EX4', beds: 3, baths: 2, price: '£1,950 pcm', url: 'https://www.rightmove.co.uk/student-accommodation/Exeter.html' },
+  { source: 'Rightmove', tag: 'src-rm', address: 'Sandford Walk, Exeter, EX1', beds: 4, baths: 2, price: '£1,750 pcm', url: 'https://www.rightmove.co.uk/student-accommodation/Exeter.html' },
+  { source: 'Rightmove', tag: 'src-rm', address: 'Bonhay Road, Exeter, EX4', beds: 2, baths: 2, price: '£1,600 pcm', url: 'https://www.rightmove.co.uk/student-accommodation/Exeter.html' }
+];
+
 function withPriceValue(list) {
   return list.map(x => ({ ...x, priceValue: (function(){ const m = x.price.replace(/,/g,'').match(/£\s*(\d+(?:\.\d+)?)/); return m ? parseFloat(m[1]) : null; })() }));
 }
 
-// Per-city config: which sources are live-checked (via this site's own /api/listings backend)
-// vs manually curated, and what to label as "checked" in the sources strip.
+// Per-city config: which sources are live-checked (via this site's own /api/listings backend,
+// passing ?city=) vs manually curated, and what to label as "checked" in the sources strip.
 const CITY_CONFIG = {
   'St Andrews': {
     staticListings: withPriceValue(STATIC_LISTINGS_STA),
@@ -672,6 +739,26 @@ const CITY_CONFIG = {
     staticListings: withPriceValue(STATIC_LISTINGS_EDI),
     sourcesChecked: ['Rightmove'],
     useBackend: false
+  },
+  'Durham': {
+    staticListings: withPriceValue(STATIC_LISTINGS_DUR),
+    sourcesChecked: ['Frampton & Roebuck', 'Morgan Douglas', 'Rightmove'],
+    useBackend: true
+  },
+  'York': {
+    staticListings: withPriceValue(STATIC_LISTINGS_YORK),
+    sourcesChecked: ['2Let Agency', 'Rightmove'],
+    useBackend: true
+  },
+  'Bath': {
+    staticListings: withPriceValue(STATIC_LISTINGS_BATH),
+    sourcesChecked: ['Peter Moore Lets', 'Rightmove'],
+    useBackend: true
+  },
+  'Exeter': {
+    staticListings: withPriceValue(STATIC_LISTINGS_EXE),
+    sourcesChecked: ['Studentpad', 'Rightmove'],
+    useBackend: true
   }
 };
 
@@ -760,7 +847,7 @@ function renderList() {
         ${meta ? `<div class="card-meta">${meta}</div>` : ''}
       </div>
       <div class="price">${item.price || ''}</div>
-      <a class="view-link" href="${item.url}" target="_blank">View</a>
+      ${item.url ? `<a class="view-link" href="${item.url}" target="_blank">View</a>` : (item.contact ? `<span class="card-contact">${item.contact}</span>` : '')}
     `;
     el.appendChild(card);
   });
@@ -772,30 +859,26 @@ async function runCheck() {
   document.getElementById('errNote').textContent = '';
   const cfg = CITY_CONFIG[selectedCity];
 
-  if (!cfg.useBackend) {
-    allListings = [...cfg.staticListings];
-    document.getElementById('bigNum').textContent = allListings.length;
-    document.getElementById('updatedAt').textContent = 'Curated snapshot, last refreshed by hand';
-    renderFilters();
-    renderList();
-    renderSourcesStrip();
-    btn.disabled = false; btn.textContent = 'Refresh';
-    return;
-  }
-
   try {
-    const res = await fetch('/api/listings');
+    const res = await fetch('/api/listings?city=' + encodeURIComponent(selectedCity));
     const data = await res.json();
     allListings = [...cfg.staticListings, ...(data.listings || [])];
     document.getElementById('bigNum').textContent = allListings.length;
-    document.getElementById('updatedAt').textContent = 'Updated ' + new Date(data.checkedAt).toLocaleString();
+    document.getElementById('updatedAt').textContent = cfg.useBackend
+      ? 'Updated ' + new Date(data.checkedAt).toLocaleString()
+      : 'Curated snapshot, plus student-added listings';
     if (data.errors && data.errors.length) {
-      document.getElementById('errNote').textContent = 'Some sources failed: ' + data.errors.map(e => e.source).join(', ');
+      const errNote = document.getElementById('errNote');
+      errNote.textContent = 'Some sources failed: ' + data.errors.map(e => e.source).join(', ');
+      errNote.title = data.errors.map(e => e.source + ': ' + e.error).join('\n');
+      console.error('Roomrun source errors:', data.errors);
     }
     renderFilters();
     renderList();
     renderSourcesStrip();
   } catch (e) {
+    allListings = [...cfg.staticListings];
+    document.getElementById('bigNum').textContent = allListings.length;
     document.getElementById('list').innerHTML = '<div class="empty">Could not reach the server. Try refreshing.</div>';
   }
   btn.disabled = false; btn.textContent = 'Refresh';
