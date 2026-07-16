@@ -177,6 +177,9 @@ padding: 3px 8px; border-radius: 6px; margin-right: 8px;
 .src-2let { background: #FFF4E0; color: #A65E00; }
 .src-pml { background: #F3E9FF; color: #6C2BB0; }
 .src-community { background: #FFF0F5; color: #B0195A; }
+.src-alba { background: #E6FFF6; color: #0A8060; }
+.src-standp { background: #EAF0FF; color: #2445A8; }
+.src-standys { background: #FFF6E0; color: #A66A00; }
 .card-contact { font-size: 11.5px; color: var(--muted); white-space: nowrap; }
 .price { font-family: 'Space Grotesk', sans-serif; font-weight: 700; font-size: 15px; color: var(--navy-900); white-space: nowrap; }
 .view-link {
@@ -186,6 +189,19 @@ font-family: 'Space Grotesk', sans-serif;
 }
 .empty { font-size: 13px; color: #97A0B5; padding: 18px 2px; text-align: center; }
 .err-note { font-size: 11px; color: #C0392B; text-align: center; margin-top: 10px; }
+
+/* ---------- Skeleton loading state ---------- */
+@keyframes skeletonPulse { 0%, 100% { opacity: 0.55; } 50% { opacity: 1; } }
+.skel-card {
+background: #fff; border: 1px solid var(--line); border-radius: 14px;
+padding: 14px 16px; display: flex; justify-content: space-between; align-items: center; gap: 12px;
+}
+.skel-bar { background: linear-gradient(90deg, #EDF0F8, #E4E8F2, #EDF0F8); border-radius: 6px; animation: skeletonPulse 1.3s ease-in-out infinite; }
+.skel-main { flex: 1; display: flex; flex-direction: column; gap: 8px; }
+.skel-addr { height: 13px; width: 62%; }
+.skel-meta { height: 10px; width: 32%; }
+.skel-price { height: 15px; width: 64px; }
+.skel-btn { height: 32px; width: 64px; border-radius: 9px; }
 
 /* ---------- Nav / secondary views ---------- */
 .nav-links { display: flex; gap: 10px; align-items: center; }
@@ -303,6 +319,13 @@ to { opacity: 1; transform: translateY(0); }
 <option value="4">4 bed</option>
 <option value="5">5+ bed</option>
 </select>
+<select class="sort-select" id="priceMinSelect" onchange="onPriceMinChange()">
+<option value="0">Min price: Any</option>
+<option value="800">Over £800</option>
+<option value="1200">Over £1,200</option>
+<option value="1600">Over £1,600</option>
+<option value="2000">Over £2,000</option>
+</select>
 <select class="sort-select" id="priceMaxSelect" onchange="onPriceMaxChange()">
 <option value="0">Max price: Any</option>
 <option value="800">Under £800</option>
@@ -315,12 +338,14 @@ to { opacity: 1; transform: translateY(0); }
 <option value="default">Sort: Default</option>
 <option value="price-asc">Price: Low to High</option>
 <option value="price-desc">Price: High to Low</option>
+<option value="beds-asc">Beds: Fewest first</option>
+<option value="beds-desc">Beds: Most first</option>
 <option value="source">Source A–Z</option>
 </select>
 </div>
 </div>
 
-<div class="card-list" id="list"><div class="empty">Loading…</div></div>
+<div class="card-list" id="list"></div>
 </div>
 </div>
 
@@ -357,7 +382,7 @@ to { opacity: 1; transform: translateY(0); }
 <div class="panel-block">
 <div class="panel-eyebrow">Step 3</div>
 <div class="panel-title">Sign up for each site's real alerts</div>
-<p class="panel-intro">I can't submit these on your behalf — most either need a free account or use a bot-protected form, so a silent auto-signup wouldn't reliably work and you'd never see what you agreed to. What I can do: get you straight to the right page, one click, no hunting.</p>
+<p class="panel-intro">One click through to each site's own alert signup — no digging through menus to find it.</p>
 <div id="siteCards"></div>
 </div>
 </div>
@@ -452,13 +477,16 @@ btn.disabled = false; btn.textContent = 'Enable notifications';
 }
 }
 
+// Focusing on St Andrews first while the app builds a real user base there — the other
+// towns' research/config stays intact below (CITY_CONFIG, STATIC_LISTINGS_*, CITY_SOURCES in
+// api/listings.js), just not exposed as clickable yet. Flip `available: true` when ready.
 const CITIES = [
 { name: 'St Andrews', available: true },
-{ name: 'Edinburgh', available: true },
-{ name: 'Durham', available: true },
-{ name: 'Bath', available: true },
-{ name: 'York', available: true },
-{ name: 'Exeter', available: true },
+{ name: 'Edinburgh', available: false },
+{ name: 'Durham', available: false },
+{ name: 'Bath', available: false },
+{ name: 'York', available: false },
+{ name: 'Exeter', available: false },
 { name: 'Glasgow', available: false }
 ];
 let selectedCity = 'St Andrews';
@@ -554,7 +582,7 @@ note: 'Search loads pre-filtered to St Andrews rooms. Click "Save this search fo
 url: 'https://www.spareroom.co.uk/flatshare/fife/st._andrews?share_type=S'
 },
 {
-name: 'St Andrews Property Lets / Bradburne & Co / 55Rent / HMJ Properties',
+name: 'St Andrews Property Lets / Bradburne & Co / 55Rent / HMJ Properties / Stand Property / St Andy\'s',
 kind: 'none', badge: 'No alert system',
 note: 'These smaller agents don\'t have an email-alert signup at all — that\'s the actual gap this dashboard fills for them. HMJ specifically wants enquiries by email (hmj@hmjproperties.co.uk) with the property name in the subject line.',
 url: 'https://www.bradburne.co.uk/lettings/fife/st-andrews/'
@@ -642,10 +670,13 @@ note.style.display = 'inline';
 }
 }
 
-// Rightmove, OnTheMarket and SpareRoom all explicitly prohibit scraping in their Terms of Use,
-// so these are a manually curated snapshot (not auto-refreshed) rather than a live check.
+// Rightmove, OnTheMarket, SpareRoom and Lettingweb (which hosts Alba St Andrews' own listings
+// page) all explicitly prohibit copying/scraping their site content in their Terms of Use, so
+// these are a manually curated snapshot (not auto-refreshed) rather than a live check.
 // Rightmove + SpareRoom blocks last refreshed live by hand 2026-07-15. OnTheMarket block
 // re-refreshed 2026-07-15 (was showing only 1 of ~17 live listings — expanded to the full set).
+// Alba St Andrews block added 2026-07-16, hand-checked against their live Lettingweb microsite
+// (Kingsbarns/Elie/Peat Inn listings excluded as too far outside town to be relevant here).
 const STATIC_LISTINGS_STA = [
 { source: 'Rightmove', tag: 'src-rm', address: 'St Andrews Hall, St Andrews, KY16', beds: 1, baths: 1, price: '£1,296 pcm', url: 'https://www.rightmove.co.uk/property-to-rent/St-Andrews.html' },
 { source: 'Rightmove', tag: 'src-rm', address: '7 Carron Place, St Andrews, Fife, KY16', beds: 3, baths: 1, price: '£1,985 pcm', url: 'https://www.rightmove.co.uk/property-to-rent/St-Andrews.html' },
@@ -678,7 +709,22 @@ const STATIC_LISTINGS_STA = [
 { source: 'SpareRoom', tag: 'src-spr', address: 'Room near East Sands (KY16)', beds: null, baths: null, price: '£750 pcm', url: 'https://www.spareroom.co.uk/flatshare/fife/st._andrews/8288086' },
 { source: 'SpareRoom', tag: 'src-spr', address: 'Bobby Jones Apartment — 2-bed flat', beds: 2, baths: null, price: '£775 pcm', url: 'https://www.spareroom.co.uk/flatshare/fife/st._andrews/17296613' },
 { source: 'SpareRoom', tag: 'src-spr', address: 'Room in two-bedroom flat, 10 min to town', beds: null, baths: null, price: '£750 pcm', url: 'https://www.spareroom.co.uk/flatshare/fife/st._andrews/17484242' },
-{ source: 'SpareRoom', tag: 'src-spr', address: 'Room, quiet setting (KY16)', beds: null, baths: null, price: '£595 pcm', url: 'https://www.spareroom.co.uk/flatshare/fife/st._andrews/8317123' }
+{ source: 'SpareRoom', tag: 'src-spr', address: 'Room, quiet setting (KY16)', beds: null, baths: null, price: '£595 pcm', url: 'https://www.spareroom.co.uk/flatshare/fife/st._andrews/8317123' },
+{ source: 'Alba St Andrews', tag: 'src-alba', address: 'Chamberlain Street, Fife', beds: 2, baths: null, price: '£1,650 pcm', url: 'https://www.lettingweb.com/property-view/fife/st-andrews/ky16/15xvr5' },
+{ source: 'Alba St Andrews', tag: 'src-alba', address: 'Abbey Court, Fife', beds: 1, baths: null, price: '£1,000 pcm', url: 'https://www.lettingweb.com/property-view/fife/st-andrews/ky16/698s5p' },
+{ source: 'Alba St Andrews', tag: 'src-alba', address: 'Balrymonth Court, Fife', beds: 4, baths: null, price: '£1,600 pcm', url: 'https://www.lettingweb.com/property-view/fife/st-andrews/ky16/5otk7w' },
+{ source: 'Alba St Andrews', tag: 'src-alba', address: 'Bonfield Road, Strathkinness, Fife', beds: 3, baths: null, price: '£1,450 pcm', url: 'https://www.lettingweb.com/property-view/fife/st-andrews/ky16/r56w65' },
+{ source: 'Alba St Andrews', tag: 'src-alba', address: 'Doocot Road, Fife', beds: 2, baths: null, price: '£1,600 pcm', url: 'https://www.lettingweb.com/property-view/fife/st-andrews/ky16/ga2oot' },
+{ source: 'Alba St Andrews', tag: 'src-alba', address: 'High Road, Strathkinness', beds: 1, baths: null, price: '£975 pcm', url: 'https://www.lettingweb.com/property-view/fife/st-andrews/ky16/dkfqrj' },
+{ source: 'Alba St Andrews', tag: 'src-alba', address: 'Main Street, Leuchars, Fife', beds: 2, baths: null, price: '£1,200 pcm', url: 'https://www.lettingweb.com/property-view/fife/tay-bridgehead/ky16/0umb1g' },
+{ source: 'Alba St Andrews', tag: 'src-alba', address: 'Main Street, Guardbridge, Fife', beds: 2, baths: null, price: '£950 pcm', url: 'https://www.lettingweb.com/property-view/fife/tay-bridgehead/ky16/gf4oft' },
+{ source: 'Alba St Andrews', tag: 'src-alba', address: 'Kennedy Gardens, St Andrews, Fife', beds: 5, baths: null, price: '£3,200 pcm', url: 'https://www.lettingweb.com/property-view/fife/st-andrews/ky16/gv3ghj' },
+{ source: 'Alba St Andrews', tag: 'src-alba', address: 'Winram Place "Annex", Fife', beds: 1, baths: null, price: '£1,200 pcm', url: 'https://www.lettingweb.com/property-view/fife/st-andrews/ky16/v1zid2' },
+{ source: 'Alba St Andrews', tag: 'src-alba', address: 'Bell Brae, St Andrews, Fife', beds: 2, baths: null, price: '£2,400 pcm', url: 'https://www.lettingweb.com/property-view/fife/st-andrews/ky16/d6h5a7' },
+{ source: 'Alba St Andrews', tag: 'src-alba', address: 'Fort Avenue, Guardbridge, Fife', beds: 4, baths: null, price: '£1,950 pcm', url: 'https://www.lettingweb.com/property-view/fife/tay-bridgehead/ky16/ruh567' },
+{ source: 'Alba St Andrews', tag: 'src-alba', address: 'Lamberton Place, Fife', beds: 2, baths: null, price: '£1,500 pcm', url: 'https://www.lettingweb.com/property-view/fife/st-andrews/ky16/tpvx5n' },
+{ source: 'Alba St Andrews', tag: 'src-alba', address: 'Letham Place, Fife', beds: 2, baths: null, price: '£1,400 pcm', url: 'https://www.lettingweb.com/property-view/fife/st-andrews/ky16/onm7rn' },
+{ source: 'Alba St Andrews', tag: 'src-alba', address: 'Pilgrim Place, Guardbridge, Fife', beds: 2, baths: null, price: '£1,295 pcm', url: 'https://www.lettingweb.com/property-view/fife/tay-bridgehead/ky16/09mzks' }
 ];
 
 // Edinburgh: Rightmove's dedicated student-accommodation search shows 312 results across 13
@@ -749,7 +795,7 @@ return list.map(x => ({ ...x, priceValue: (function(){ const m = x.price.replace
 const CITY_CONFIG = {
 'St Andrews': {
 staticListings: withPriceValue(STATIC_LISTINGS_STA),
-sourcesChecked: ['St Andrews Property Lets', 'Bradburne & Co', '55Rent', 'HMJ Properties', 'Lawson & Thompson', 'Studentpad', 'Rightmove', 'OnTheMarket', 'SpareRoom'],
+sourcesChecked: ['St Andrews Property Lets', 'Bradburne & Co', '55Rent', 'HMJ Properties', 'Lawson & Thompson', 'Studentpad', 'Stand Property', "St Andy's Student Letting", 'Rightmove', 'OnTheMarket', 'SpareRoom', 'Alba St Andrews'],
 useBackend: true
 },
 'Edinburgh': {
@@ -794,6 +840,7 @@ let activeFilter = 'All';
 let activeSort = 'default';
 let activeBeds = 'All';
 let activePriceMax = 0;
+let activePriceMin = 0;
 
 function renderFilters() {
 const sources = ['All', ...new Set(allListings.map(l => l.source))];
@@ -823,6 +870,11 @@ activePriceMax = parseInt(document.getElementById('priceMaxSelect').value, 10);
 renderList();
 }
 
+function onPriceMinChange() {
+activePriceMin = parseInt(document.getElementById('priceMinSelect').value, 10);
+renderList();
+}
+
 function getSortedFiltered() {
 let items = activeFilter === 'All' ? [...allListings] : allListings.filter(l => l.source === activeFilter);
 if (activeBeds !== 'All') {
@@ -832,15 +884,55 @@ items = items.filter(l => l.beds != null && (n === 5 ? l.beds >= 5 : l.beds === 
 if (activePriceMax > 0) {
 items = items.filter(l => l.priceValue != null && l.priceValue <= activePriceMax);
 }
+if (activePriceMin > 0) {
+items = items.filter(l => l.priceValue != null && l.priceValue >= activePriceMin);
+}
 if (activeSort === 'price-asc') {
 items.sort((a, b) => (a.priceValue ?? Infinity) - (b.priceValue ?? Infinity));
 } else if (activeSort === 'price-desc') {
 items.sort((a, b) => (b.priceValue ?? -Infinity) - (a.priceValue ?? -Infinity));
+} else if (activeSort === 'beds-asc') {
+items.sort((a, b) => (a.beds ?? Infinity) - (b.beds ?? Infinity));
+} else if (activeSort === 'beds-desc') {
+items.sort((a, b) => (b.beds ?? -Infinity) - (a.beds ?? -Infinity));
 } else if (activeSort === 'source') {
 items.sort((a, b) => a.source.localeCompare(b.source));
 }
 return items;
 }
+
+function renderSkeleton(n) {
+const el = document.getElementById('list');
+el.innerHTML = Array.from({ length: n }).map(() => `
+<div class="skel-card">
+<div class="skel-main">
+<div class="skel-bar skel-addr"></div>
+<div class="skel-bar skel-meta"></div>
+</div>
+<div class="skel-bar skel-price"></div>
+<div class="skel-bar skel-btn"></div>
+</div>
+`).join('');
+}
+
+let lastCheckedAt = null;
+function timeAgo(iso) {
+if (!iso) return '';
+const s = Math.max(0, Math.floor((Date.now() - new Date(iso).getTime()) / 1000));
+if (s < 10) return 'just now';
+if (s < 60) return s + 's ago';
+const m = Math.floor(s / 60);
+if (m < 60) return m + (m === 1 ? ' minute ago' : ' minutes ago');
+const h = Math.floor(m / 60);
+return h + (h === 1 ? ' hour ago' : ' hours ago');
+}
+function updateUpdatedLabel() {
+const el = document.getElementById('updatedAt');
+if (!lastCheckedAt) return;
+el.textContent = 'Updated ' + timeAgo(lastCheckedAt);
+el.title = new Date(lastCheckedAt).toLocaleString();
+}
+setInterval(updateUpdatedLabel, 20000);
 
 function bedBathLabel(item) {
 const parts = [];
@@ -875,15 +967,22 @@ const btn = document.getElementById('refreshBtn');
 btn.disabled = true; btn.textContent = 'Checking…';
 document.getElementById('errNote').textContent = '';
 const cfg = CITY_CONFIG[selectedCity];
+// Only show the skeleton on a genuinely first load — a manual refresh usually hits the
+// server-side cache and comes back fast, so keep the existing cards on screen for that
+// instead of flashing a loading state over them.
+if (!allListings.length) renderSkeleton(6);
 
 try {
 const res = await fetch('/api/listings?city=' + encodeURIComponent(selectedCity));
 const data = await res.json();
 allListings = [...cfg.staticListings, ...(data.listings || [])];
 document.getElementById('bigNum').textContent = allListings.length;
-document.getElementById('updatedAt').textContent = cfg.useBackend
-? 'Updated ' + new Date(data.checkedAt).toLocaleString()
-: 'Curated snapshot, plus student-added listings';
+if (cfg.useBackend) {
+lastCheckedAt = data.checkedAt;
+updateUpdatedLabel();
+} else {
+document.getElementById('updatedAt').textContent = 'Curated snapshot, plus student-added listings';
+}
 if (data.errors && data.errors.length) {
 const errNote = document.getElementById('errNote');
 errNote.textContent = 'Some sources failed: ' + data.errors.map(e => e.source).join(', ');
