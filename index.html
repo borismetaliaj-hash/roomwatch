@@ -675,18 +675,20 @@ note.style.display = 'inline';
 // these are a manually curated snapshot (not auto-refreshed) rather than a live check.
 // Rightmove + SpareRoom blocks last refreshed live by hand 2026-07-15. OnTheMarket block
 // re-refreshed 2026-07-15 (was showing only 1 of ~17 live listings — expanded to the full set).
+// Rightmove URLs updated 2026-07-16 to link straight to each individual listing (found by
+// matching address+price on the live search) instead of the generic search results page.
 // Alba St Andrews block added 2026-07-16, hand-checked against their live Lettingweb microsite
 // (Kingsbarns/Elie/Peat Inn listings excluded as too far outside town to be relevant here).
 const STATIC_LISTINGS_STA = [
-{ source: 'Rightmove', tag: 'src-rm', address: 'St Andrews Hall, St Andrews, KY16', beds: 1, baths: 1, price: '£1,296 pcm', url: 'https://www.rightmove.co.uk/property-to-rent/St-Andrews.html' },
-{ source: 'Rightmove', tag: 'src-rm', address: '7 Carron Place, St Andrews, Fife, KY16', beds: 3, baths: 1, price: '£1,985 pcm', url: 'https://www.rightmove.co.uk/property-to-rent/St-Andrews.html' },
-{ source: 'Rightmove', tag: 'src-rm', address: 'Abbey Street, St Andrews, Fife', beds: 2, baths: 1, price: '£1,600 pcm', url: 'https://www.rightmove.co.uk/property-to-rent/St-Andrews.html' },
-{ source: 'Rightmove', tag: 'src-rm', address: 'Lumsden Crescent, St Andrews', beds: 4, baths: 2, price: '£1,850 pcm', url: 'https://www.rightmove.co.uk/property-to-rent/St-Andrews.html' },
-{ source: 'Rightmove', tag: 'src-rm', address: 'Bobby Jones Place, St Andrews, Fife, KY16', beds: 2, baths: 1, price: '£1,700 pcm', url: 'https://www.rightmove.co.uk/property-to-rent/St-Andrews.html' },
-{ source: 'Rightmove', tag: 'src-rm', address: 'St Leonards Fields House, Abbey Walk, St Andrews, KY16', beds: 2, baths: 2, price: '£2,990 pcm', url: 'https://www.rightmove.co.uk/property-to-rent/St-Andrews.html' },
-{ source: 'Rightmove', tag: 'src-rm', address: 'Morton Crescent, St Andrews', beds: 3, baths: 1, price: '£1,650 pcm', url: 'https://www.rightmove.co.uk/property-to-rent/St-Andrews.html' },
-{ source: 'Rightmove', tag: 'src-rm', address: 'Lamond Drive, St Andrews, Fife, KY16', beds: 4, baths: null, price: '£3,300 pcm', url: 'https://www.rightmove.co.uk/property-to-rent/St-Andrews.html' },
-{ source: 'Rightmove', tag: 'src-rm', address: 'Sandyhill Road, St Andrews, KY16', beds: 2, baths: 1, price: '£1,700 pcm', url: 'https://www.rightmove.co.uk/property-to-rent/St-Andrews.html' },
+{ source: 'Rightmove', tag: 'src-rm', address: 'St Andrews Hall, St Andrews, KY16', beds: 1, baths: 1, price: '£1,296 pcm', url: 'https://www.rightmove.co.uk/properties/90887883' },
+{ source: 'Rightmove', tag: 'src-rm', address: '7 Carron Place, St Andrews, Fife, KY16', beds: 3, baths: 1, price: '£1,985 pcm', url: 'https://www.rightmove.co.uk/properties/90878502' },
+{ source: 'Rightmove', tag: 'src-rm', address: 'Abbey Street, St Andrews, Fife', beds: 2, baths: 1, price: '£1,600 pcm', url: 'https://www.rightmove.co.uk/properties/90512121' },
+{ source: 'Rightmove', tag: 'src-rm', address: 'Lumsden Crescent, St Andrews', beds: 4, baths: 2, price: '£1,850 pcm', url: 'https://www.rightmove.co.uk/properties/90000354' },
+{ source: 'Rightmove', tag: 'src-rm', address: 'Bobby Jones Place, St Andrews, Fife, KY16', beds: 2, baths: 1, price: '£1,700 pcm', url: 'https://www.rightmove.co.uk/properties/89924160' },
+{ source: 'Rightmove', tag: 'src-rm', address: 'St Leonards Fields House, Abbey Walk, St Andrews, KY16', beds: 2, baths: 2, price: '£2,990 pcm', url: 'https://www.rightmove.co.uk/properties/89761173' },
+{ source: 'Rightmove', tag: 'src-rm', address: 'Morton Crescent, St Andrews', beds: 3, baths: 1, price: '£1,650 pcm', url: 'https://www.rightmove.co.uk/properties/89307915' },
+{ source: 'Rightmove', tag: 'src-rm', address: 'Lamond Drive, St Andrews, Fife, KY16', beds: 4, baths: null, price: '£3,300 pcm', url: 'https://www.rightmove.co.uk/properties/149596712' },
+{ source: 'Rightmove', tag: 'src-rm', address: 'Sandyhill Road, St Andrews, KY16', beds: 2, baths: 1, price: '£1,700 pcm', url: 'https://www.rightmove.co.uk/properties/88127538' },
 { source: 'OnTheMarket', tag: 'src-otm', address: '7 Carron Place, St. Andrews, Fife, KY16', beds: 3, baths: 1, price: '£1,985 pcm', url: 'https://www.onthemarket.com/details/19931593/' },
 { source: 'OnTheMarket', tag: 'src-otm', address: 'Chamberlain Street, Fife', beds: 2, baths: 1, price: '£1,650 pcm', url: 'https://www.onthemarket.com/details/19936927/' },
 { source: 'OnTheMarket', tag: 'src-otm', address: 'St Andrews Hall, St Andrews, KY16', beds: 1, baths: 1, price: '£1,296 pcm', url: 'https://www.onthemarket.com/details/19933314/' },
