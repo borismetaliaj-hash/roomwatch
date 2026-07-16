@@ -160,27 +160,44 @@ async function getChromiumReady() {
   return chromiumReadyPromise;
 }
 
+// Both JS-rendered sources used to launch their own full Chromium instance — two cold
+// browser launches per request was most of the "refresh is slow" complaint. They now share
+// a single browser (separate tabs), and the whole scrape result is cached in Redis for
+// CACHE_TTL_SECONDS (see bottom of file) so most requests skip Chromium entirely.
+let sharedBrowserPromise = null;
+async function getSharedBrowser() {
+  if (!sharedBrowserPromise) {
+    sharedBrowserPromise = (async () => {
+      // @sparticuz/chromium and puppeteer-core ship as pure ESM as of their current major
+      // versions, so a plain require() throws ERR_REQUIRE_ESM from this CommonJS file.
+      // Dynamic import() works from CJS regardless of the target's module format.
+      const puppeteerModule = await import('puppeteer-core');
+      const puppeteer = puppeteerModule.default || puppeteerModule;
+      const { chromium, executablePath } = await getChromiumReady();
+      return puppeteer.launch({ args: chromium.args, executablePath, headless: true });
+    })();
+  }
+  return sharedBrowserPromise;
+}
+
+async function closeSharedBrowser() {
+  if (sharedBrowserPromise) {
+    try { const browser = await sharedBrowserPromise; await browser.close(); } catch (e) {}
+    sharedBrowserPromise = null;
+  }
+}
+
 async function fetchRenderedText(url, waitMs) {
-  // @sparticuz/chromium and puppeteer-core ship as pure ESM as of their current major versions,
-  // so a plain require() throws ERR_REQUIRE_ESM from this CommonJS file. Dynamic import() works
-  // from CJS regardless of the target's module format, so use that instead.
-  const puppeteerModule = await import('puppeteer-core');
-  const puppeteer = puppeteerModule.default || puppeteerModule;
-  const { chromium, executablePath } = await getChromiumReady();
-  const browser = await puppeteer.launch({
-    args: chromium.args,
-    executablePath,
-    headless: true
-  });
+  const browser = await getSharedBrowser();
+  const page = await browser.newPage();
   try {
-    const page = await browser.newPage();
     await page.setUserAgent('Mozilla/5.0 (compatible; Roomrun/1.0)');
-    await page.goto(url, { waitUntil: 'networkidle2', timeout: 20000 });
+    await page.goto(url, { waitUntil: 'networkidle2', timeout: 15000 });
     if (waitMs) await new Promise(r => setTimeout(r, waitMs));
     const html = await page.content();
     return convert(html, HTT_OPTS);
   } finally {
-    await browser.close();
+    await page.close();
   }
 }
 
@@ -245,6 +262,77 @@ function parseHMJ(text) {
   return results;
 }
 
+// --- Stand Property (Inchdairnie, part of the Coulters group): one combined "for rent" page
+// covering Edinburgh + St Andrews + nearby Fife villages, plain HTML, no JS needed. Filtered down
+// to the St Andrews/KY16 area here since Edinburgh isn't this dashboard's concern. Best-effort
+// line-scan parser (exact html-to-text rendering of this WordPress+search-plugin page wasn't
+// testable pre-deploy) — flag to Boris if entries look off.
+function parseStandProperty(text) {
+  const lines = text.split('\n').map(l => l.trim()).filter(Boolean);
+  const results = [];
+  for (let i = 0; i < lines.length; i++) {
+    const rentM = lines[i].match(/^Monthly rent £([\d,]+)/i);
+    if (!rentM) continue;
+    let url = null;
+    for (let j = i; j >= 0 && j >= i - 6; j--) {
+      const um = lines[j].match(/\((https:\/\/standproperty\.co\.uk\/property\/[^\)]+)\)/);
+      if (um) { url = um[1]; break; }
+    }
+    const bedTypeM = (lines[i + 1] || '').match(/^(\d+)\s+bedrooms?\s+(\w+)/i);
+    if (!bedTypeM) continue;
+    const beds = parseInt(bedTypeM[1], 10);
+    let addrParts = [];
+    let letAgreed = false;
+    let baths = null;
+    let j = i + 2;
+    for (; j < lines.length && j < i + 12; j++) {
+      const line = lines[j];
+      if (/^let agreed$/i.test(line)) { letAgreed = true; continue; }
+      const closeM = line.match(/^(\d+)\s+bedrooms?(?:\s+(\d+)\s+bathrooms?)?/i);
+      if (closeM) { baths = closeM[2] ? parseInt(closeM[2], 10) : null; break; }
+      addrParts.push(line.replace(/,$/, ''));
+    }
+    if (letAgreed) continue;
+    const address = addrParts.join(', ').trim();
+    if (!address) continue;
+    if (!/KY16|st\.?\s*andrews/i.test(address)) continue; // St Andrews / KY16 area only, skip their Edinburgh stock
+    results.push({ address: titleCase(address), beds, baths, price: '£' + rentM[1] + ' pcm', url: url || 'https://standproperty.co.uk/for-rent/' });
+  }
+  return results;
+}
+
+// --- St Andy's Student Letting: a tiny landlord-run agency (they own every property directly,
+// no separate landlords). The listing page doesn't show status, so each property's own page has
+// to be checked for "Already Let" — capped at 12 properties to bound worst case if their
+// portfolio grows, since this fans out to N detail-page fetches (still plain HTML, no browser).
+function extractStandysLinks(text) {
+  const re = /\(https:\/\/standys\.co\.uk\/properties\/([a-z0-9\-]+)\/?\)/gi;
+  const seen = new Set();
+  let m;
+  while ((m = re.exec(text)) !== null) {
+    seen.add('https://standys.co.uk/properties/' + m[1] + '/');
+  }
+  return [...seen].slice(0, 12);
+}
+
+function parseStandysDetail(text, url) {
+  if (/already let/i.test(text)) return null;
+  const bedsM = text.match(/Bedrooms:\s*(\d+)/i);
+  const bathsM = text.match(/Bathrooms:\s*(\d+)/i);
+  const addrM = text.match(/Address:\s*(.+)/i);
+  const zipM = text.match(/Zip:\s*(.+)/i);
+  const titleM = text.match(/^(.+?)\s*\n/);
+  const address = addrM ? addrM[1].trim() : (titleM ? titleM[1].trim() : null);
+  if (!address) return null;
+  const zip = zipM ? zipM[1].trim() : '';
+  return {
+    address: zip ? address + ', ' + zip : address,
+    beds: bedsM ? parseInt(bedsM[1], 10) : null,
+    baths: bathsM ? parseInt(bathsM[1], 10) : null,
+    url
+  };
+}
+
 // --- Frampton & Roebuck (Durham): each listing renders as one link whose text reads
 // "ADDRESS PRICE PPPW BEDS BATHS Bills Included: STATUS More details" — best-effort, exact
 // html-to-text rendering of this WordPress theme wasn't testable pre-deploy. Their T&Cs are a
@@ -305,9 +393,9 @@ function parsePeterMoore(text) {
   return results;
 }
 
-// Per-city live sources. Rightmove/OnTheMarket/Zoopla/SpareRoom and Morgan Douglas (Durham,
-// explicit "no data mining" clause) are deliberately excluded — those stay manually-curated
-// static snapshots in index.html, never live-scraped.
+// Per-city live sources. Rightmove/OnTheMarket/Zoopla/SpareRoom/Lettingweb (Alba St Andrews)
+// and Morgan Douglas (Durham, explicit "no data mining" clause) are deliberately excluded —
+// those stay manually-curated static snapshots in index.html, never live-scraped.
 const CITY_SOURCES = {
   'St Andrews': [
     {
@@ -345,6 +433,25 @@ const CITY_SOURCES = {
         if (!count) return [];
         return [{ source: 'Studentpad', tag: 'src-sp', address: count + ' rooms listed on the official University portal', beds: null, baths: null, price: '', priceValue: null, url: 'https://www.standrewsstudentpad.co.uk/Accommodation' }];
       }
+    },
+    {
+      name: 'Stand Property', url: 'https://standproperty.co.uk/for-rent/',
+      run: async () => parseStandProperty(await fetchText('https://standproperty.co.uk/for-rent/'))
+        .map(i => ({ source: 'Stand Property', tag: 'src-standp', address: i.address, beds: i.beds, baths: i.baths, price: i.price, priceValue: parsePrice(i.price), url: i.url }))
+    },
+    {
+      name: "St Andy's Student Letting", url: 'https://standys.co.uk/property/',
+      run: async () => {
+        const listingText = await fetchText('https://standys.co.uk/property/');
+        const links = extractStandysLinks(listingText);
+        const details = await Promise.all(links.map(async (u) => {
+          try { return parseStandysDetail(await fetchText(u), u); } catch (e) { return null; }
+        }));
+        return details.filter(Boolean).map(i => ({
+          source: "St Andy's Student Letting", tag: 'src-standys', address: i.address,
+          beds: i.beds, baths: i.baths, price: '', priceValue: null, url: i.url
+        }));
+      }
     }
   ],
   'Durham': [
@@ -380,13 +487,14 @@ const CITY_SOURCES = {
   ]
 };
 
-module.exports = async (req, res) => {
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  const city = (req.query && req.query.city) || 'St Andrews';
-  const sources = CITY_SOURCES[city] || [];
+// How long a scraped result stays "fresh" before the next request triggers a real re-check.
+// Community ("Added by students") listings are never cached — they're a cheap Redis read and
+// should show up immediately after someone submits one, not wait for the next scrape window.
+const CACHE_TTL_SECONDS = 300; // 5 minutes
+
+async function scrapeLive(sources) {
   const listings = [];
   const errors = [];
-
   await Promise.all(sources.map(async (src) => {
     try {
       listings.push(...(await src.run()));
@@ -398,12 +506,42 @@ module.exports = async (req, res) => {
       errors.push({ source: src.name, error: detail });
     }
   }));
+  await closeSharedBrowser();
+  return { listings, errors, checkedAt: new Date().toISOString() };
+}
 
-  listings.push(...(await getCommunityListings(city)));
+async function getSourceData(city, sources) {
+  const cacheKey = 'srccache:' + city;
+  try {
+    const cached = await redis.get(cacheKey);
+    if (cached) {
+      return typeof cached === 'string' ? JSON.parse(cached) : cached;
+    }
+  } catch (e) {
+    // Redis unreachable — fall through to a live scrape rather than failing the request.
+  }
+  const fresh = await scrapeLive(sources);
+  try {
+    await redis.set(cacheKey, JSON.stringify(fresh), { ex: CACHE_TTL_SECONDS });
+  } catch (e) {
+    // Caching is best-effort; a failed write just means the next request scrapes live again.
+  }
+  return fresh;
+}
+
+module.exports = async (req, res) => {
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  const city = (req.query && req.query.city) || 'St Andrews';
+  const sources = CITY_SOURCES[city] || [];
+
+  const [sourceData, communityListings] = await Promise.all([
+    getSourceData(city, sources),
+    getCommunityListings(city)
+  ]);
 
   res.status(200).json({
-    listings,
-    errors,
-    checkedAt: new Date().toISOString()
+    listings: [...sourceData.listings, ...communityListings],
+    errors: sourceData.errors,
+    checkedAt: sourceData.checkedAt
   });
 };
