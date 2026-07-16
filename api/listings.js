@@ -74,8 +74,28 @@ function parsePrice(str) {
   return m ? parseFloat(m[1]) : null;
 }
 
-// --- St Andrews Property Lets: html-to-text renders the table as column-aligned text ---
-function parseSAPL(text) {
+// --- St Andrews Property Lets: html-to-text renders the table as column-aligned text.
+// The nav menu on the same page links each property to its own /town-centre/ or
+// /residential-areas/ page, so we build an address->URL map from that and use it instead of
+// sending everyone to the homepage. Matched by street name only (house number stripped) since
+// a couple of their own nav entries don't quite agree with the table's numbering — falls back
+// to the homepage if no confident match is found.
+function normalizeStreet(addr) {
+  return addr.replace(/^\s*\d+[a-z]?\s+/i, '').toLowerCase().replace(/[^a-z]/g, '');
+}
+
+function extractSAPLLinks(text) {
+  const re = /([A-Za-z0-9][A-Za-z0-9 .'\-]*?)\s*\((https:\/\/standrewspropertylets\.uk\/(?:town-centre|residential-areas)\/[a-z0-9\-]+)\)/g;
+  const map = new Map();
+  let m;
+  while ((m = re.exec(text)) !== null) {
+    const key = normalizeStreet(m[1].trim());
+    if (key && !map.has(key)) map.set(key, m[2]);
+  }
+  return map;
+}
+
+function parseSAPL(text, linkMap) {
   const rows = [];
   const statusAtEnd = /(Property Let|Available|To Let)\s*$/i;
   for (const rawLine of text.split('\n')) {
@@ -84,7 +104,9 @@ function parseSAPL(text) {
     const m = line.match(statusAtEnd);
     if (!m) continue;
     const address = line.slice(0, m.index).trim();
-    if (address) rows.push({ address: titleCase(address), status: m[1] });
+    if (!address) continue;
+    const url = (linkMap && linkMap.get(normalizeStreet(address))) || 'https://standrewspropertylets.uk/';
+    rows.push({ address: titleCase(address), status: m[1], url });
   }
   return rows;
 }
@@ -201,6 +223,10 @@ async function fetchRenderedText(url, waitMs) {
   }
 }
 
+// Each card is one big link (thumbnail + address) wrapping through to its own /property/<slug>/
+// page — html-to-text usually folds that into "Address (url)" on one line, but the exact
+// wrapping isn't guaranteed, so this also checks the couple of lines just before as a fallback.
+// Falls back to the overview page if no URL is found near a given address.
 function parseLawsonThompson(text) {
   // Property blocks show an address line followed eventually by "Unavailable" or a real status/price
   const lines = text.split('\n').map(l => l.trim()).filter(Boolean);
@@ -208,10 +234,22 @@ function parseLawsonThompson(text) {
   for (let i = 0; i < lines.length - 1; i++) {
     const bedMatch = (lines[i + 1] || '').match(/^(\d+)\s+bedrooms?$/i);
     if (bedMatch) {
-      const address = lines[i];
+      let addressLine = lines[i];
       const status = lines[i + 2] || '';
+      let url = null;
+      const sameLineUrlM = addressLine.match(/\((https:\/\/www\.lawsonthompson\.co\.uk\/property\/[^\)]+)\)/);
+      if (sameLineUrlM) {
+        url = sameLineUrlM[1];
+        addressLine = addressLine.replace(sameLineUrlM[0], '').trim();
+      } else {
+        for (let j = Math.max(0, i - 2); j <= i; j++) {
+          const m = lines[j].match(/\((https:\/\/www\.lawsonthompson\.co\.uk\/property\/[^\)]+)\)/);
+          if (m) { url = m[1]; break; }
+        }
+      }
+      const address = addressLine;
       if (address && !/unavailable/i.test(status) && address.length < 90) {
-        results.push({ address: titleCase(address), status, beds: parseInt(bedMatch[1], 10) });
+        results.push({ address: titleCase(address), status, beds: parseInt(bedMatch[1], 10), url: url || 'https://www.lawsonthompson.co.uk/student-lettings/' });
       }
     }
   }
@@ -400,9 +438,13 @@ const CITY_SOURCES = {
   'St Andrews': [
     {
       name: 'St Andrews Property Lets', url: 'https://standrewspropertylets.uk/',
-      run: async () => parseSAPL(await fetchText('https://standrewspropertylets.uk/'))
-        .filter(i => !/property let/i.test(i.status))
-        .map(i => ({ source: 'St Andrews Property Lets', tag: 'src-sapl', address: i.address, beds: null, baths: null, price: '', priceValue: null, url: 'https://standrewspropertylets.uk/' }))
+      run: async () => {
+        const text = await fetchText('https://standrewspropertylets.uk/');
+        const linkMap = extractSAPLLinks(text);
+        return parseSAPL(text, linkMap)
+          .filter(i => !/property let/i.test(i.status))
+          .map(i => ({ source: 'St Andrews Property Lets', tag: 'src-sapl', address: i.address, beds: null, baths: null, price: '', priceValue: null, url: i.url }));
+      }
     },
     {
       name: 'Bradburne & Co', url: 'https://www.bradburne.co.uk/lettings/fife/st-andrews/',
@@ -424,7 +466,7 @@ const CITY_SOURCES = {
     {
       name: 'Lawson & Thompson', url: 'https://www.lawsonthompson.co.uk/student-lettings/',
       run: async () => parseLawsonThompson(await fetchRenderedText('https://www.lawsonthompson.co.uk/student-lettings/', 1500))
-        .map(i => ({ source: 'Lawson & Thompson', tag: 'src-lt', address: i.address, beds: i.beds ?? null, baths: null, price: i.status, priceValue: null, url: 'https://www.lawsonthompson.co.uk/student-lettings/' }))
+        .map(i => ({ source: 'Lawson & Thompson', tag: 'src-lt', address: i.address, beds: i.beds ?? null, baths: null, price: i.status, priceValue: null, url: i.url }))
     },
     {
       name: 'Studentpad (room count)', url: 'https://www.standrewsstudentpad.co.uk/Accommodation',
