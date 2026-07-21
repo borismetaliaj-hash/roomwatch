@@ -443,25 +443,25 @@ const CITY_SOURCES = {
         const linkMap = extractSAPLLinks(text);
         return parseSAPL(text, linkMap)
           .filter(i => !/property let/i.test(i.status))
-          .map(i => ({ source: 'St Andrews Property Lets', tag: 'src-sapl', address: i.address, beds: null, baths: null, price: '', priceValue: null, url: i.url }));
+          .map(i => ({ source: 'St Andrews Property Lets', tag: 'src-sapl', address: i.address, beds: null, baths: null, price: '', priceValue: null, url: i.url, contactEmail: 'property@standrewspropertylets.co.uk' }));
       }
     },
     {
       name: 'Bradburne & Co', url: 'https://www.bradburne.co.uk/lettings/fife/st-andrews/',
       run: async () => parseBradburne(await fetchText('https://www.bradburne.co.uk/lettings/fife/st-andrews/'))
         .filter(i => !/let agreed/i.test(i.status))
-        .map(i => ({ source: 'Bradburne & Co', tag: 'src-brad', address: i.address, beds: null, baths: null, price: i.rent || '', priceValue: parsePrice(i.rent), url: i.url }))
+        .map(i => ({ source: 'Bradburne & Co', tag: 'src-brad', address: i.address, beds: null, baths: null, price: i.rent || '', priceValue: parsePrice(i.rent), url: i.url, contactEmail: 'info@bradburne.co.uk' }))
     },
     {
       name: '55Rent', url: 'https://55rent.co.uk/properties.html',
       run: async () => parse55Rent(await fetchText('https://55rent.co.uk/properties.html'))
         .filter(i => !/tenancy agreed/i.test(i.statusOrPrice))
-        .map(i => ({ source: '55Rent', tag: 'src-55r', address: i.address, beds: null, baths: null, price: i.statusOrPrice, priceValue: parsePrice(i.statusOrPrice), url: i.url }))
+        .map(i => ({ source: '55Rent', tag: 'src-55r', address: i.address, beds: null, baths: null, price: i.statusOrPrice, priceValue: parsePrice(i.statusOrPrice), url: i.url, contactEmail: 'enquiries@55rent.co.uk' }))
     },
     {
       name: 'HMJ Properties', url: 'http://hmjproperties.co.uk/?page_id=12',
       run: async () => parseHMJ(await fetchText('http://hmjproperties.co.uk/?page_id=12'))
-        .map(i => ({ source: 'HMJ Properties', tag: 'src-hmj', address: i.address, beds: i.beds, baths: null, price: i.rent || '', priceValue: parsePrice(i.rent), url: i.url }))
+        .map(i => ({ source: 'HMJ Properties', tag: 'src-hmj', address: i.address, beds: i.beds, baths: null, price: i.rent || '', priceValue: parsePrice(i.rent), url: i.url, contactEmail: 'hmj@hmjproperties.co.uk' }))
     },
     {
       name: 'Lawson & Thompson', url: 'https://www.lawsonthompson.co.uk/student-lettings/',
@@ -479,7 +479,7 @@ const CITY_SOURCES = {
     {
       name: 'Stand Property', url: 'https://standproperty.co.uk/for-rent/',
       run: async () => parseStandProperty(await fetchText('https://standproperty.co.uk/for-rent/'))
-        .map(i => ({ source: 'Stand Property', tag: 'src-standp', address: i.address, beds: i.beds, baths: i.baths, price: i.price, priceValue: parsePrice(i.price), url: i.url }))
+        .map(i => ({ source: 'Stand Property', tag: 'src-standp', address: i.address, beds: i.beds, baths: i.baths, price: i.price, priceValue: parsePrice(i.price), url: i.url, contactEmail: 'info@standproperty.co.uk' }))
     },
     {
       name: "St Andy's Student Letting", url: 'https://standys.co.uk/property/',
@@ -491,7 +491,7 @@ const CITY_SOURCES = {
         }));
         return details.filter(Boolean).map(i => ({
           source: "St Andy's Student Letting", tag: 'src-standys', address: i.address,
-          beds: i.beds, baths: i.baths, price: '', priceValue: null, url: i.url
+          beds: i.beds, baths: i.baths, price: '', priceValue: null, url: i.url, contactEmail: 'info@standys.co.uk'
         }));
       }
     }
@@ -573,6 +573,9 @@ async function getSourceData(city, sources) {
 
 module.exports = async (req, res) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
+  // Belt-and-braces: make sure no browser/CDN layer ever caches this response on top of our
+  // intentional Redis cache above — that cache is the one source of truth for freshness.
+  res.setHeader('Cache-Control', 'no-store');
   const city = (req.query && req.query.city) || 'St Andrews';
   const sources = CITY_SOURCES[city] || [];
 
