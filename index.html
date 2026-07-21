@@ -187,6 +187,13 @@ font-size: 12px; font-weight: 700; color: #fff; background: linear-gradient(135d
 padding: 8px 16px; border-radius: 9px; text-decoration: none; white-space: nowrap;
 font-family: 'Space Grotesk', sans-serif;
 }
+.card-actions { display: flex; flex-direction: column; align-items: flex-end; gap: 6px; }
+.viewing-link {
+font-size: 11px; font-weight: 700; color: var(--accent); text-decoration: none; white-space: nowrap;
+border: 1.5px solid rgba(76,126,255,0.35); border-radius: 8px; padding: 6px 12px;
+font-family: 'Space Grotesk', sans-serif; transition: background .12s, border-color .12s;
+}
+.viewing-link:hover { background: rgba(76,126,255,0.08); border-color: var(--accent); }
 .empty { font-size: 13px; color: #97A0B5; padding: 18px 2px; text-align: center; }
 .err-note { font-size: 11px; color: #C0392B; text-align: center; margin-top: 10px; }
 
@@ -477,16 +484,13 @@ btn.disabled = false; btn.textContent = 'Enable notifications';
 }
 }
 
-// Focusing on St Andrews first while the app builds a real user base there — the other
-// towns' research/config stays intact below (CITY_CONFIG, STATIC_LISTINGS_*, CITY_SOURCES in
-// api/listings.js), just not exposed as clickable yet. Flip `available: true` when ready.
+// Focusing on St Andrews first while the app builds a real user base there. Durham/Bath/York/
+// Exeter are hidden from the picker entirely for now (their research/config stays intact below
+// in CITY_CONFIG, STATIC_LISTINGS_*, CITY_SOURCES in api/listings.js — just not surfaced here).
+// Edinburgh and Glasgow stay visible as "coming soon" since they're next in line.
 const CITIES = [
 { name: 'St Andrews', available: true },
 { name: 'Edinburgh', available: false },
-{ name: 'Durham', available: false },
-{ name: 'Bath', available: false },
-{ name: 'York', available: false },
-{ name: 'Exeter', available: false },
 { name: 'Glasgow', available: false }
 ];
 let selectedCity = 'St Andrews';
@@ -712,21 +716,21 @@ const STATIC_LISTINGS_STA = [
 { source: 'SpareRoom', tag: 'src-spr', address: 'Bobby Jones Apartment — 2-bed flat', beds: 2, baths: null, price: '£775 pcm', url: 'https://www.spareroom.co.uk/flatshare/fife/st._andrews/17296613' },
 { source: 'SpareRoom', tag: 'src-spr', address: 'Room in two-bedroom flat, 10 min to town', beds: null, baths: null, price: '£750 pcm', url: 'https://www.spareroom.co.uk/flatshare/fife/st._andrews/17484242' },
 { source: 'SpareRoom', tag: 'src-spr', address: 'Room, quiet setting (KY16)', beds: null, baths: null, price: '£595 pcm', url: 'https://www.spareroom.co.uk/flatshare/fife/st._andrews/8317123' },
-{ source: 'Alba St Andrews', tag: 'src-alba', address: 'Chamberlain Street, Fife', beds: 2, baths: null, price: '£1,650 pcm', url: 'https://www.lettingweb.com/property-view/fife/st-andrews/ky16/15xvr5' },
-{ source: 'Alba St Andrews', tag: 'src-alba', address: 'Abbey Court, Fife', beds: 1, baths: null, price: '£1,000 pcm', url: 'https://www.lettingweb.com/property-view/fife/st-andrews/ky16/698s5p' },
-{ source: 'Alba St Andrews', tag: 'src-alba', address: 'Balrymonth Court, Fife', beds: 4, baths: null, price: '£1,600 pcm', url: 'https://www.lettingweb.com/property-view/fife/st-andrews/ky16/5otk7w' },
-{ source: 'Alba St Andrews', tag: 'src-alba', address: 'Bonfield Road, Strathkinness, Fife', beds: 3, baths: null, price: '£1,450 pcm', url: 'https://www.lettingweb.com/property-view/fife/st-andrews/ky16/r56w65' },
-{ source: 'Alba St Andrews', tag: 'src-alba', address: 'Doocot Road, Fife', beds: 2, baths: null, price: '£1,600 pcm', url: 'https://www.lettingweb.com/property-view/fife/st-andrews/ky16/ga2oot' },
-{ source: 'Alba St Andrews', tag: 'src-alba', address: 'High Road, Strathkinness', beds: 1, baths: null, price: '£975 pcm', url: 'https://www.lettingweb.com/property-view/fife/st-andrews/ky16/dkfqrj' },
-{ source: 'Alba St Andrews', tag: 'src-alba', address: 'Main Street, Leuchars, Fife', beds: 2, baths: null, price: '£1,200 pcm', url: 'https://www.lettingweb.com/property-view/fife/tay-bridgehead/ky16/0umb1g' },
-{ source: 'Alba St Andrews', tag: 'src-alba', address: 'Main Street, Guardbridge, Fife', beds: 2, baths: null, price: '£950 pcm', url: 'https://www.lettingweb.com/property-view/fife/tay-bridgehead/ky16/gf4oft' },
-{ source: 'Alba St Andrews', tag: 'src-alba', address: 'Kennedy Gardens, St Andrews, Fife', beds: 5, baths: null, price: '£3,200 pcm', url: 'https://www.lettingweb.com/property-view/fife/st-andrews/ky16/gv3ghj' },
-{ source: 'Alba St Andrews', tag: 'src-alba', address: 'Winram Place "Annex", Fife', beds: 1, baths: null, price: '£1,200 pcm', url: 'https://www.lettingweb.com/property-view/fife/st-andrews/ky16/v1zid2' },
-{ source: 'Alba St Andrews', tag: 'src-alba', address: 'Bell Brae, St Andrews, Fife', beds: 2, baths: null, price: '£2,400 pcm', url: 'https://www.lettingweb.com/property-view/fife/st-andrews/ky16/d6h5a7' },
-{ source: 'Alba St Andrews', tag: 'src-alba', address: 'Fort Avenue, Guardbridge, Fife', beds: 4, baths: null, price: '£1,950 pcm', url: 'https://www.lettingweb.com/property-view/fife/tay-bridgehead/ky16/ruh567' },
-{ source: 'Alba St Andrews', tag: 'src-alba', address: 'Lamberton Place, Fife', beds: 2, baths: null, price: '£1,500 pcm', url: 'https://www.lettingweb.com/property-view/fife/st-andrews/ky16/tpvx5n' },
-{ source: 'Alba St Andrews', tag: 'src-alba', address: 'Letham Place, Fife', beds: 2, baths: null, price: '£1,400 pcm', url: 'https://www.lettingweb.com/property-view/fife/st-andrews/ky16/onm7rn' },
-{ source: 'Alba St Andrews', tag: 'src-alba', address: 'Pilgrim Place, Guardbridge, Fife', beds: 2, baths: null, price: '£1,295 pcm', url: 'https://www.lettingweb.com/property-view/fife/tay-bridgehead/ky16/09mzks' }
+{ source: 'Alba St Andrews', tag: 'src-alba', address: 'Chamberlain Street, Fife', beds: 2, baths: null, price: '£1,650 pcm', url: 'https://www.lettingweb.com/property-view/fife/st-andrews/ky16/15xvr5', contactEmail: 'info@albastandrews.co.uk' },
+{ source: 'Alba St Andrews', tag: 'src-alba', address: 'Abbey Court, Fife', beds: 1, baths: null, price: '£1,000 pcm', url: 'https://www.lettingweb.com/property-view/fife/st-andrews/ky16/698s5p', contactEmail: 'info@albastandrews.co.uk' },
+{ source: 'Alba St Andrews', tag: 'src-alba', address: 'Balrymonth Court, Fife', beds: 4, baths: null, price: '£1,600 pcm', url: 'https://www.lettingweb.com/property-view/fife/st-andrews/ky16/5otk7w', contactEmail: 'info@albastandrews.co.uk' },
+{ source: 'Alba St Andrews', tag: 'src-alba', address: 'Bonfield Road, Strathkinness, Fife', beds: 3, baths: null, price: '£1,450 pcm', url: 'https://www.lettingweb.com/property-view/fife/st-andrews/ky16/r56w65', contactEmail: 'info@albastandrews.co.uk' },
+{ source: 'Alba St Andrews', tag: 'src-alba', address: 'Doocot Road, Fife', beds: 2, baths: null, price: '£1,600 pcm', url: 'https://www.lettingweb.com/property-view/fife/st-andrews/ky16/ga2oot', contactEmail: 'info@albastandrews.co.uk' },
+{ source: 'Alba St Andrews', tag: 'src-alba', address: 'High Road, Strathkinness', beds: 1, baths: null, price: '£975 pcm', url: 'https://www.lettingweb.com/property-view/fife/st-andrews/ky16/dkfqrj', contactEmail: 'info@albastandrews.co.uk' },
+{ source: 'Alba St Andrews', tag: 'src-alba', address: 'Main Street, Leuchars, Fife', beds: 2, baths: null, price: '£1,200 pcm', url: 'https://www.lettingweb.com/property-view/fife/tay-bridgehead/ky16/0umb1g', contactEmail: 'info@albastandrews.co.uk' },
+{ source: 'Alba St Andrews', tag: 'src-alba', address: 'Main Street, Guardbridge, Fife', beds: 2, baths: null, price: '£950 pcm', url: 'https://www.lettingweb.com/property-view/fife/tay-bridgehead/ky16/gf4oft', contactEmail: 'info@albastandrews.co.uk' },
+{ source: 'Alba St Andrews', tag: 'src-alba', address: 'Kennedy Gardens, St Andrews, Fife', beds: 5, baths: null, price: '£3,200 pcm', url: 'https://www.lettingweb.com/property-view/fife/st-andrews/ky16/gv3ghj', contactEmail: 'info@albastandrews.co.uk' },
+{ source: 'Alba St Andrews', tag: 'src-alba', address: 'Winram Place "Annex", Fife', beds: 1, baths: null, price: '£1,200 pcm', url: 'https://www.lettingweb.com/property-view/fife/st-andrews/ky16/v1zid2', contactEmail: 'info@albastandrews.co.uk' },
+{ source: 'Alba St Andrews', tag: 'src-alba', address: 'Bell Brae, St Andrews, Fife', beds: 2, baths: null, price: '£2,400 pcm', url: 'https://www.lettingweb.com/property-view/fife/st-andrews/ky16/d6h5a7', contactEmail: 'info@albastandrews.co.uk' },
+{ source: 'Alba St Andrews', tag: 'src-alba', address: 'Fort Avenue, Guardbridge, Fife', beds: 4, baths: null, price: '£1,950 pcm', url: 'https://www.lettingweb.com/property-view/fife/tay-bridgehead/ky16/ruh567', contactEmail: 'info@albastandrews.co.uk' },
+{ source: 'Alba St Andrews', tag: 'src-alba', address: 'Lamberton Place, Fife', beds: 2, baths: null, price: '£1,500 pcm', url: 'https://www.lettingweb.com/property-view/fife/st-andrews/ky16/tpvx5n', contactEmail: 'info@albastandrews.co.uk' },
+{ source: 'Alba St Andrews', tag: 'src-alba', address: 'Letham Place, Fife', beds: 2, baths: null, price: '£1,400 pcm', url: 'https://www.lettingweb.com/property-view/fife/st-andrews/ky16/onm7rn', contactEmail: 'info@albastandrews.co.uk' },
+{ source: 'Alba St Andrews', tag: 'src-alba', address: 'Pilgrim Place, Guardbridge, Fife', beds: 2, baths: null, price: '£1,295 pcm', url: 'https://www.lettingweb.com/property-view/fife/tay-bridgehead/ky16/09mzks', contactEmail: 'info@albastandrews.co.uk' }
 ];
 
 // Edinburgh: Rightmove's dedicated student-accommodation search shows 312 results across 13
@@ -943,6 +947,16 @@ if (item.baths != null) parts.push(item.baths + (item.baths === 1 ? ' bath' : ' 
 return parts.join(' · ');
 }
 
+// Pre-fills a viewing-request email to the agency, ready for the student to send from their
+// own mail app — free, no backend, no account needed. Only shown when we have a real, directly
+// verified agency email (not guessed) for that source.
+function buildViewingMailto(item) {
+const subject = 'Viewing request — ' + item.address;
+const body = "Hi,\n\nI'm interested in viewing " + item.address + " (found via Roomrun). Could you let me know some available times?\n\nThanks!";
+return 'mailto:' + encodeURIComponent(item.contactEmail).replace(/%40/g, '@')
++ '?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(body);
+}
+
 function renderList() {
 const el = document.getElementById('list');
 const items = getSortedFiltered();
@@ -952,13 +966,15 @@ items.forEach(item => {
 const meta = bedBathLabel(item);
 const card = document.createElement('div');
 card.className = 'card';
+const viewBtn = item.url ? `<a class="view-link" href="${item.url}" target="_blank">View</a>` : (item.contact ? `<span class="card-contact">${item.contact}</span>` : '');
+const viewingBtn = item.contactEmail ? `<a class="viewing-link" href="${buildViewingMailto(item)}">Request viewing</a>` : '';
 card.innerHTML = `
 <div class="card-main">
 <div class="card-addr"><span class="src ${item.tag}">${item.source}</span>${item.address}</div>
 ${meta ? `<div class="card-meta">${meta}</div>` : ''}
 </div>
 <div class="price">${item.price || ''}</div>
-${item.url ? `<a class="view-link" href="${item.url}" target="_blank">View</a>` : (item.contact ? `<span class="card-contact">${item.contact}</span>` : '')}
+<div class="card-actions">${viewBtn}${viewingBtn}</div>
 `;
 el.appendChild(card);
 });
@@ -975,7 +991,7 @@ const cfg = CITY_CONFIG[selectedCity];
 if (!allListings.length) renderSkeleton(6);
 
 try {
-const res = await fetch('/api/listings?city=' + encodeURIComponent(selectedCity));
+const res = await fetch('/api/listings?city=' + encodeURIComponent(selectedCity), { cache: 'no-store' });
 const data = await res.json();
 allListings = [...cfg.staticListings, ...(data.listings || [])];
 document.getElementById('bigNum').textContent = allListings.length;
